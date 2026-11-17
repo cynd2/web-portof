@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SafeLedger WA Case Study | Cindy Cetta Khairunnisa</title>
+<meta name="description" content="Case study: SafeLedger WA.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="case.css">
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <strong><a href="index.html" style="color:inherit;text-decoration:none">Cindy Cetta Khairunnisa</a></strong>
+    <nav aria-label="Main">
+      <ul>
+        <li><a href="index.html#education">Education</a></li>
+        <li><a href="index.html#projects">Projects</a></li>
+        <li><a href="index.html#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap cs-top">
+    <a class="back" href="index.html#safeledger">&larr; Back to portfolio</a>
+    <p class="eyebrow">Case study</p>
+    <h1 class="cs-h1">Bookkeeping for a workshop owner who <em>won't</em> open a spreadsheet.</h1>
+    <p class="cs-lede">A WhatsApp plus n8n bookkeeping bot for a safe-manufacturing workshop: staff send a message, code parses the amount, an LLM only classifies the category, and every entry is echoed back for confirmation.</p>
+    <dl class="cs-meta"><div><dt>ROLE</dt><dd>Product &amp; Automation Builder</dd></div><div><dt>YEAR</dt><dd>2026</dd></div><div><dt>STACK</dt><dd>n8n, WhatsApp Cloud API, Google Sheets, LLM classification</dd></div></dl>
+    
+
+  </div>
+
+  <section class="cs"><div class="wrap">
+    <h2>The problem</h2>
+    <p class="cs-title">He couldn't explain why 15 safes sold but the bank balance barely moved</p>
+<p>A safe workshop owner tracked driver allowances, worker lunches and hardware runs from memory and fading receipts. At month end he could not say where the money went, and he won't open a spreadsheet.</p><p>Any solution had to meet him where he already works: WhatsApp, in his own language, with no new app and no form to fill in.</p>
+  </div></section>
+  <section class="cs"><div class="wrap">
+    <h2>The solution</h2>
+    <p class="cs-title">Log a money event by sending a WhatsApp message</p>
+    <div class="cards">
+      <div class="card "><span class="num">1</span><h4>Text, voice note or receipt photo</h4><p>Staff send the entry the way they already talk. Nothing new to learn.</p></div>
+      <div class="card "><span class="num">2</span><h4>Code parses the amount</h4><p>Indonesian amounts like 500k or 15jt are parsed by code. LLMs garble numbers, so the amount never comes from the model.</p></div>
+      <div class="card "><span class="num">3</span><h4>An LLM only classifies</h4><p>The model picks the category and nothing else, which keeps the part that can go wrong small.</p></div>
+      <div class="card "><span class="num">4</span><h4>Every entry is echoed back</h4><p>The sender confirms each record, e.g. &ldquo;Tercatat: -Rp 150.000 | Konsumsi | makan siang pekerja.&rdquo;</p></div>
+    </div>
+  </div></section>
+  <section class="cs"><div class="wrap">
+    <h2>What I built</h2>
+    <p class="cs-title">Four n8n workflows and a Google Sheet ledger</p>
+<p>I wrote the PRD and built the workflows in n8n. Intake saves the raw message before any heavy step runs, so a failure never loses data.</p>    <ul class="flow"><li class=d>Intake</li><li class="ar">&rarr;</li><li class=d>Process Message</li><li class="ar">&rarr;</li><li>Google Sheet ledger</li></ul>    <div class="cards">
+      <div class="card "><p class="k">WORKFLOW</p><h4>Intake</h4><p>Receives the WhatsApp message and stores it raw first.</p></div>
+      <div class="card "><p class="k">WORKFLOW</p><h4>Process Message</h4><p>Parses the amount, classifies the category, writes the ledger row and replies.</p></div>
+      <div class="card "><p class="k">WORKFLOW</p><h4>Daily Summary, 20:00</h4><p>Sends the day's totals each evening.</p></div>
+      <div class="card "><p class="k">WORKFLOW</p><h4>Error Handler</h4><p>Catches failures so nothing is silently lost.</p></div>
+    </div>    <figure class="shot narrow"><div class="frame"><img src="img/safeledger-chat.jpg" alt="WhatsApp conversation with the SafeLedger bot" loading="lazy"></div><figcaption>The conversation: a text, a voice note, and a message with two amounts that the bot asks to be resent one at a time.</figcaption></figure>    <figure class="shot"><div class="frame"><img src="img/safeledger-ledger.jpg" alt="Ledger tab, one row per money event" loading="lazy"></div><figcaption>The ledger tab in Google Sheets: one row per money event, with type, amount, category and note.</figcaption></figure>
+  </div></section>
+  <section class="cs"><div class="wrap">
+    <h2>Status</h2>
+    <p class="cs-title">Built and simulation-tested; not yet live</p>
+<p>Four workflows are built and passed a simulated test. The live run on the owner's real WhatsApp number is the next step, so there is no usage data yet.</p>
+  </div></section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>SafeLedger WA &middot; 2026</span>
+    <a href="index.html#safeledger">Back to portfolio &rarr;</a>
+  </div>
+</footer>
+
+</body>
+</html>

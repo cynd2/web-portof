@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GazaSafes Case Study | Cindy Cetta Khairunnisa</title>
+<meta name="description" content="Case study: a static WhatsApp-first site and a self-hosted, consent-gated analytics pipeline for GazaSafes.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="case.css">
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <strong><a href="index.html" style="color:inherit;text-decoration:none">Cindy Cetta Khairunnisa</a></strong>
+    <nav aria-label="Main">
+      <ul>
+        <li><a href="index.html#education">Education</a></li>
+        <li><a href="index.html#projects">Projects</a></li>
+        <li><a href="index.html#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap cs-top">
+    <a class="back" href="index.html#gazasafes">&larr; Back to portfolio</a>
+    <p class="eyebrow">Case study &middot; 2026</p>
+    <h1 class="cs-h1">Turning every visit into a WhatsApp enquiry, and <em>measuring</em> it without the data leaving Indonesia.</h1>
+    <p class="cs-lede">GazaSafes sells fire-resistant safes for storing gold, coins and cash, at home or in a shop. I built its static site, where every button opens a pre-filled WhatsApp message instead of a cart, and a self-hosted analytics pipeline that replaces GA4: nothing is tracked until the visitor accepts, raw IPs are never stored, and hosting is planned in-country.</p>
+    <dl class="cs-meta">
+      <div><dt>ROLE</dt><dd>Full-Stack Developer (Frontend &amp; Backend)</dd></div>
+      <div><dt>STATUS</dt><dd>Frontend live; analytics tested locally</dd></div>
+    </dl>
+    <ul class="chips">
+      <li><a class="primary" href="https://gazasafes.com" target="_blank" rel="noopener">Visit gazasafes.com</a></li>
+      <li><a href="https://github.com/cynd2/gazasafes_website-v2" target="_blank" rel="noopener">Repository</a></li>
+    </ul>
+    <figure class="shot" style="margin-top:32px">
+      <div class="frame"><img src="img/gaza-home.jpg" alt="GazaSafes homepage hero with headline, trust stat strip and a product safe"></div>
+      <figcaption>The homepage hero: headline, dual call to action, and the trust stat strip (4 jam, 5 tahun, 7 kota, 15+ varian).</figcaption>
+    </figure>
+  </div>
+
+  <section class="cs"><div class="wrap">
+    <h2>The problem</h2>
+    <p class="cs-title">Every page said the same thing, and the one keyword it chased was unwinnable</p>
+    <p>The original site had one generic title and meta description reused across every page, no structured data, and no local-search signals, despite being a genuinely local business with seven physical branches.</p>
+    <p>Worse, the stated SEO target was the single word "brankas", a term dominated by national marketplaces like Ralali and Blibli, unwinnable for a small multi-branch business in any reasonable timeframe.</p>
+  </div></section>
+
+  <section class="cs"><div class="wrap">
+    <h2>The solution</h2>
+    <p class="cs-title">Compete on searches you can actually win</p>
+    <div class="cards">
+      <div class="card"><span class="num">1</span><h4>Branch-city keywords, not "brankas"</h4><p>Targeting terms like "brankas Kediri" instead of the national word, where a small local business can realistically rank.</p></div>
+      <div class="card"><span class="num">2</span><h4>A unique title and description per page</h4><p>Home, three product lines, seven branch pages and services each got their own tag pair, written to the product and city.</p></div>
+      <div class="card"><span class="num">3</span><h4>Structured data, priced honestly</h4><p>Organization, LocalBusiness per branch, Product and FAQPage JSON-LD, with an AggregateOffer that carries no price field, since the site never shows one.</p></div>
+      <div class="card"><span class="num">4</span><h4>Two article pages, built end to end</h4><p>Long-tail, real-question content, coded as standalone pages with a defined design system and Article/FAQPage schema.</p></div>
+    </div>
+  </div></section>
+
+  <section class="cs"><div class="wrap">
+    <h2>What I built</h2>
+    <p class="cs-title">From the landing page to a self-hosted analytics backend</p>
+    <p>No GA4. Every visitor event goes through a pipeline I built and can host in-country, and nothing is tracked until the visitor accepts.</p>
+
+    <p class="cs-label">FRONTEND</p>
+    <div class="cards">
+      <div class="card"><p class="k">SITE STRUCTURE</p><h4>Static, no framework or build step</h4>
+        <p>A home page, three product pages (Berlin, Ottawa, Case) and a privacy page, in plain HTML, CSS and JS.</p>
+        <p>Being static makes it fast to load, cheap to host and easy for search engines to crawl.</p></div>
+      <div class="card"><p class="k">CONVERSION PATH</p><h4>No cart: every enquiry goes to WhatsApp</h4>
+        <p>Every button opens <code>wa.me</code> with a message already filled in for that product or variant, such as "Halo, saya ingin tanya harga brankas Berlin VI." Sales already knows which product the buyer means.</p>
+        <p>Each product page has a catalog table of variant dimensions and weights, with a "Tanya Harga" link on every row.</p></div>
+      <div class="card"><p class="k">LOCAL SIGNALS AND SEO</p><h4>Showing the business is local</h4>
+        <p>City pills mark the branch areas, and a Mojokerto branch map is embedded.</p>
+        <p><code>robots.txt</code>, <code>sitemap.xml</code> and canonical tags. The home canonical is <code>/</code>, not <code>index.html</code>, so Google doesn't see two copies of the home page.</p>
+        <p>A gold and jewelry FAQ answers a real buyer question.</p></div>
+    </div>
+    <div class="card" style="margin-bottom:16px"><p class="k">CONSENT-GATED TRACKING</p><h4>Nothing leaves the browser until the visitor accepts</h4>
+      <div class="cards wide" style="margin:12px 0 0">
+        <div><p><strong>Consent first:</strong> <code>js/analytics.js</code> checks <code>GazaSafesConsent.isAccepted()</code> before every send.</p>
+          <p><strong>Banner and link:</strong> a cookie banner, plus a "Pengaturan Cookie" footer link to change the choice later. <code>privacy.html</code> explains what's collected.</p>
+          <p><strong>Labelled elements:</strong> any element with <code>data-track</code> is counted by one click listener, e.g. <code>whatsapp_cta_hero</code>, so the dashboard shows which button produced each enquiry.</p></div>
+        <div><p><strong>Session token:</strong> a random ID in <code>localStorage</code>. If storage is blocked, a fresh ID is used and the pageview still counts.</p>
+          <p><strong>Reliable delivery:</strong> <code>navigator.sendBeacon</code> still delivers when the tab closes; older browsers fall back to <code>fetch</code> with <code>keepalive</code>.</p>
+          <p><strong>Payload:</strong> event type, page path, referrer, client timestamp, session token, site key, and click label if there is one.</p></div>
+      </div>
+    </div>
+
+    <p class="cs-label">BACKEND, THE ANALYTICS PIPELINE</p>
+    <div class="cards wide">
+      <div class="card dark"><p class="k">01 &middot; INGESTION API</p><h4>Fastify + Zod, the public endpoint</h4>
+        <p><code>/v1/events</code> takes one event and <code>/v1/events/batch</code> up to 20.</p>
+        <p>Rejects a missing site key with <code>401</code> and a malformed payload with <code>400</code> plus field-level errors. Per-IP rate limits protect it, though the limits are still placeholder values.</p>
+        <p>The server adds timestamp, IP and user agent; the browser never supplies them.</p>
+        <p>Answers <code>202</code> and queues the event on Redis Streams without waiting, so a slow database can't make visitors wait or lose events.</p></div>
+      <div class="card dark"><p class="k">02 &middot; WORKER</p><h4>Where data is cleaned and enriched</h4>
+        <p>Reads the queue as a consumer group and, on startup, first picks up messages it received but never acknowledged.</p>
+        <p>Drops bot traffic by user agent before it reaches the database.</p>
+        <p>Looks up country and city in a local MaxMind database, no network call. If the file is missing it logs a warning and carries on.</p>
+        <p>Hashes the IP with a secret pepper; the raw IP is never stored.</p>
+        <p>Maps the browser token to a session through a Redis key with a sliding 30-minute expiry, and saves the UTM source from the landing URL.</p>
+        <p>Sessions and pages go to Postgres; events go to ClickHouse, a column database built for large event volumes.</p></div>
+    </div>
+    <div class="cards wide">
+      <div class="card"><p class="k">03 &middot; REPORTING API</p><h4>Read-only, behind a bearer key</h4>
+        <p>The key is compared with a timing-safe check. Five endpoints:</p>
+        <p><code>pageviews</code> daily count; <code>top-pages</code> joined in application code, since Postgres and ClickHouse can't join directly; <code>sessions</code> paginated with total and average duration; <code>click-events</code> ranked by label; <code>traffic-sources</code> using UTM, then referrer domain, then direct.</p>
+        <p>Every endpoint rejects date ranges over 92 days, so no one can run an unbounded query over the events table.</p></div>
+      <div class="card"><p class="k">04 &middot; DASHBOARD</p><h4>A static page reading the reporting API</h4>
+        <p>Three headline numbers, a pageviews line chart, bar charts for top pages, clicks and traffic sources, and a paginated sessions table.</p>
+        <p>7, 30 and 90-day presets or custom dates, a "View as table" toggle on every chart, and light, dark and auto themes.</p>
+        <p>Chart.js is bundled in rather than loaded from a CDN, so it works on a Pi with unreliable internet. The API address and key stay only in that browser.</p></div>
+    </div>
+
+    <p class="cs-label">HOW AN EVENT TRAVELS</p>
+    <ul class="flow" style="margin-bottom:24px">
+      <li>Visitor accepts</li><li class="ar">&rarr;</li><li>sendBeacon</li><li class="ar">&rarr;</li><li class="d">Ingestion API</li><li class="ar">&rarr;</li><li>Redis Streams</li><li class="ar">&rarr;</li><li class="d">Worker</li><li class="ar">&rarr;</li><li>Postgres + ClickHouse</li><li class="ar">&rarr;</li><li class="a">Reporting API &rarr; Dashboard</li>
+    </ul>
+
+    <figure class="shot narrow">
+      <div class="frame"><img src="img/gaza-dashboard.jpg" alt="Chart.js analytics dashboard reading from the reporting API, shown with demo data"></div>
+      <figcaption>The Chart.js dashboard, shown with demo data, reading from the reporting API.</figcaption>
+    </figure>
+
+    <div class="cards wide">
+      <div class="card"><p class="k">05 &middot; INFRASTRUCTURE</p><p>Docker Compose runs Postgres, ClickHouse, Redis and the services, with healthchecks, restart policies and a Dockerfile per service. Secrets live in .env files excluded from git.</p></div>
+      <div class="card"><p class="k">06 &middot; PRIVACY AND COMPLIANCE</p><p>The plan follows Indonesia's UU PDP: every stored field must support one of the five reports, there is no raw IP column or browser fingerprinting, and tracking waits for consent. Hosting is planned on a Raspberry Pi in Indonesia so personal data never leaves the country.</p></div>
+    </div>
+  </div></section>
+
+  <section class="cs"><div class="wrap">
+    <h2>Background</h2>
+    <p class="cs-title">A business selling safes for storing gold and coins whose website couldn't be found locally</p>
+    <p>GazaSafes sells, delivers, installs and repairs safes used for storing gold, coins, cash and documents, at home or in a shop, from seven branches across East Java: Pasuruan, Kediri, Nganjuk, Madiun, Solo, Mojokerto and Kudus. Every purchase inquiry ends the same way, in a pre-filled WhatsApp message, not a cart.</p>
+    <p>That's a good fit for local search, if the site is built to be found locally. It wasn't. My scope covered the whole stack: the static site and its SEO groundwork, a consent flow, and a self-hosted analytics pipeline that replaces GA4 so visitor data stays in Indonesia.</p>
+    <div class="cards" style="margin-top:20px">
+      <div class="card"><p class="k">BRANCHES</p><h4>7 cities across East Java</h4></div>
+      <div class="card"><p class="k">CONVERSION MODEL</p><h4>WhatsApp-gated, no on-site price</h4></div>
+      <div class="card"><p class="k">MY SCOPE</p><h4>Frontend, SEO and self-hosted analytics</h4></div>
+      <div class="card"><p class="k">STATUS</p><h4>Frontend live; analytics tested locally</h4></div>
+    </div>
+  </div></section>
+
+  <section class="cs"><div class="wrap">
+    <h2>Research</h2>
+    <p class="cs-title">An audit of the live site, not a user study</p>
+    <div class="cards">
+      <div class="card"><p>One generic meta title and description, reused on every page.</p></div>
+      <div class="card"><p>No structured data (schema.org) anywhere on the live pages.</p></div>
+      <div class="card"><p>No local SEO signals: no LocalBusiness schema, no consistent name/address/phone.</p></div>
+      <div class="card"><p>Thin per-product content, not enough to compete for the terms it needed.</p></div>
+    </div>
+    <p class="small">No user interviews or competitive analysis in the conventional sense: this was a direct audit of the existing site against how local search actually ranks small multi-branch businesses.</p>
+  </div></section>
+
+  <section class="cs"><div class="wrap">
+    <h2>Define</h2>
+    <p class="cs-title">How do you make a seven-branch business visible in seven different local searches at once?</p>
+    <div class="cards">
+      <div class="card" style="background:var(--accent);border-color:var(--accent)"><p class="k" style="color:rgba(255,255,255,.7)">HOUSEHOLD &amp; SMALL BUYERS</p><p style="color:#fff">Home, shop, place of worship. The Case product line addresses them directly in its copy.</p></div>
+      <div class="card"><p class="k">BUSINESS &amp; INSTITUTIONAL BUYERS</p><p>Cooperatives, clinics, gold shops, leasing offices. Ottawa and Berlin are written for them.</p></div>
+    </div>
+    <p>These two segments come straight from the site's own product copy, not from interviews. The harder question underneath them wasn't who buys, but which searches a small business with seven branches could realistically rank for, which is what the keyword strategy in Ideation answers.</p>
+  </div></section>
+
+  <section class="cs"><div class="wrap">
+    <h2>Ideation</h2>
+    <p class="cs-title">Trading a big keyword for seven winnable ones</p>
+    <div class="cards wide">
+      <div class="card"><p class="k">PAIN POINT</p><h4>"Brankas" is a national keyword the site can't win</h4><p class="k" style="margin-top:12px">BECAME</p><p>Seven branch-city keywords instead: "brankas Kediri", "brankas Madiun", and so on, one page per city.</p></div>
+      <div class="card"><p class="k">PAIN POINT</p><h4>Every page reads identically to Google</h4><p class="k" style="margin-top:12px">BECAME</p><p>A title/description pair per page, written to what that page actually sells or where it actually is.</p></div>
+    </div>
+    <div class="panel" style="margin-top:8px">
+      <span class="tag">Where to work first</span>
+      <div class="cols">
+        <p>For a business with physical branches, ranking on Google Maps brings in buyers faster than organic ranking. Google Business Profile in all seven cities, real photos, and consistent name/address/phone come before any on-page work.</p>
+        <p>On-page SEO (tags, schema, sitemap) is week two. Articles are month two onward: two a month, answering real buyer questions, is what actually moves a long-tail term over time.</p>
+      </div>
+    </div>
+  </div></section>
+
+  <section class="cs"><div class="wrap">
+    <h2>Design</h2>
+    <p class="cs-title">Building the pages the strategy needed</p>
+    <p>The two article pages were coded, not just planned: a font pairing and colour palette were defined and applied consistently across both, with photo placeholder frames and pre-written alt text ready for real photography.</p>
+    <div class="cards wide">
+      <div class="card"><h4 style="margin-bottom:14px">Typography</h4>
+        <p class="k">HEADINGS</p><p style="font-size:26px;font-weight:800;margin-bottom:14px;color:var(--ink)">Archivo</p>
+        <p class="k">BODY</p><p style="font-size:20px;color:var(--ink)">Public Sans</p></div>
+      <div class="card"><h4 style="margin-bottom:14px">Colour tokens</h4>
+        <div class="swatches">
+          <div class="swatch"><div style="background:#141414"></div><span>Near-black</span></div>
+          <div class="swatch"><div style="background:#F5A83C"></div><span>Amber</span></div>
+          <div class="swatch"><div style="background:#1F1F1F"></div><span>Panel</span></div>
+          <div class="swatch"><div style="background:#F6F3ED"></div><span>Off-white</span></div>
+          <div class="swatch"><div style="background:#B8791A"></div><span>Link/label</span></div>
+        </div></div>
+    </div>
+  </div></section>
+
+  <section class="cs"><div class="wrap">
+    <h2>Testing &amp; iterations</h2>
+    <p class="cs-title">Caught a discrepancy before it shipped in structured data</p>
+    <p>Reviewing the checklist against the live site surfaced a factual mismatch: the site states a 5-year service warranty, while an early draft FAQ and meta description claimed 10 years. Shipping that inconsistency in FAQPage schema risks a rich-result penalty for content that doesn't match what's on screen.</p>
+    <p>Resolved to 5 tahun, matching the live site. No search-ranking data exists yet to test against: Google's own guidance is 2 to 6 weeks for local terms once Google Business Profile is active, and 6 months or more for a broader term with regular articles.</p>
+    <div class="card" style="margin-top:20px"><p class="k">WHAT'S STILL UNMEASURED</p><p>No ranking data, no click-through data, and no confirmation yet that all seven branch pages and Google Business Profile listings are live and consistent. This is strategy and shipped implementation, not a validated result.</p></div>
+  </div></section>
+
+  <section class="cs"><div class="wrap">
+    <h2>Result &amp; final thoughts</h2>
+    <p class="cs-title">A site that competes where it can actually be found</p>
+    <p>The frontend, the consent flow and the full analytics pipeline are done, and the pipeline was tested end to end locally. The frontend analytics work is committed; the plan document is not yet. Alongside that sits a keyword strategy built around what a seven-branch business can realistically rank for.</p>
+    <p>The decision I'd defend hardest is walking away from "brankas". A national keyword feels like the obvious target, but for a business this size it's a multi-year bet against companies with a different budget entirely.</p>
+    <div class="panel" style="margin-top:20px">
+      <span class="tag">What's still open</span>
+      <div class="cols">
+        <p>Point the beacon at a real endpoint and set up the Raspberry Pi properly: TLS, backups and hardening.</p>
+        <p>Verify Google Business Profile is live and consistent across all seven cities, with real photos per branch.</p>
+        <p>Keep the two-articles-a-month cadence going and watch Search Console for the branch-city terms actually moving.</p>
+      </div>
+    </div>
+  </div></section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>GazaSafes &middot; SEO &amp; Local Search</span>
+    <a href="index.html#gazasafes">Back to portfolio &rarr;</a>
+  </div>
+</footer>
+
+</body>
+</html>

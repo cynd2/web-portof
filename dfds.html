@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Driver Fatigue Detection Case Study | Cindy Cetta Khairunnisa</title>
+<meta name="description" content="Case study: Driver Fatigue Detection.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="case.css">
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <strong><a href="index.html" style="color:inherit;text-decoration:none">Cindy Cetta Khairunnisa</a></strong>
+    <nav aria-label="Main">
+      <ul>
+        <li><a href="index.html#education">Education</a></li>
+        <li><a href="index.html#projects">Projects</a></li>
+        <li><a href="index.html#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap cs-top">
+    <a class="back" href="index.html#dfds">&larr; Back to portfolio</a>
+    <p class="eyebrow">Case study</p>
+    <h1 class="cs-h1">A drowsiness detector that still <em>works</em> after dark.</h1>
+    <p class="cs-lede">Driver fatigue detection systems are built on faces lit by daylight. Drivers keep driving after sunset. This project rebuilt the front of the pipeline so the face is still readable when the cabin is dark.</p>
+    <dl class="cs-meta"><div><dt>ROLE</dt><dd>Researcher &amp; Systems Developer</dd></div><div><dt>YEAR</dt><dd>2024&ndash;2025 &middot; PT. VKTR / PENS</dd></div><div><dt>STACK</dt><dd>C++, ROS, OpenCV, Jetson AGX Xavier, TensorRT</dd></div></dl>
+    <ul class="chips"><li><a class=primary href="https://ieeexplore.ieee.org/document/11161450" target="_blank" rel="noopener">View publication</a></li></ul>
+    <figure class="shot" style="margin-top:32px"><div class="frame"><img src="img/dfds-histograms.jpg" alt="Two night-driving frames before and after enhancement, each with its luminance histogram" loading="lazy"></div><figcaption>Original frames (a, c) against the enhanced output (b, d), each with its luminance histogram. The original histograms spike hard against zero; after enhancement the distribution spreads across the range.</figcaption></figure>
+  </div>
+
+  <section class="cs"><div class="wrap">
+    <h2>What shipped</h2>
+    <p class="cs-title">End to end, in numbers</p>
+    <div class="cards">
+      <div class="card "><p style="font-size:28px;font-weight:800;margin:0 0 6px;color:var(--ink)">80%</p><p>PERCLOS detection accuracy, the percentage of time the eyes are measured closed.</p></div>
+      <div class="card "><p style="font-size:28px;font-weight:800;margin:0 0 6px;color:var(--ink)">80%</p><p>Yawning detection accuracy, measured the same way over frame windows.</p></div>
+      <div class="card "><p style="font-size:28px;font-weight:800;margin:0 0 6px;color:var(--ink)">14 &rarr; 8 FPS</p><p>Enhancement alone runs at 14 FPS on the Jetson. The full pipeline with the GUI attached runs at 8.</p></div>
+      <div class="card "><p style="font-size:28px;font-weight:800;margin:0 0 6px;color:var(--ink)">20 lux</p><p>The floor below which no amount of enhancement recovers a usable face.</p></div>
+    </div><p class="small">Figures from the IES 2025 paper and the internship work at Politeknik Elektronika Negeri Surabaya (PENS).</p>
+  </div></section>
+  <section class="cs"><div class="wrap">
+    <h2>The problem</h2>
+    <p class="cs-title">Fatigue detection cannot function in low-light conditions</p>
+<p>The World Health Organization estimates 1.9 million lives are at risk from road accidents worldwide, and driver drowsiness is one of the leading causes of the fatal ones. Vision-based fatigue detection is a reasonable answer to it: the eyes and mouth give the signal away.</p><p>The catch is that published systems are generally validated on faces in the visible light spectrum. Drivers work from morning to night. In a dark cabin, uneven light and shadow blur or erase the exact features the detector depends on, so the system fails silently at the hours fatigue matters most.</p><p>Simply brightening the image doesn't solve it either. Histogram Equalization and its adaptive variant over-enhance and amplify noise, which degrades interpretation rather than improving it. The detector doesn't produce a wrong answer in the dark; it produces no answer at all.</p>
+  </div></section>
+  <section class="cs"><div class="wrap">
+    <h2>The solution</h2>
+    <p class="cs-title">Fix the image before the detector ever sees it</p>
+    <div class="cards">
+      <div class="card "><span class="num">1</span><h4>Illumination-invariant pre-processing</h4><p>The enhancement sits ahead of detection, so the existing drowsiness logic is untouched. Lighting stops being the detector's problem.</p></div>
+      <div class="card "><span class="num">2</span><h4>Fuzzy sets to model doubt</h4><p>Interval-Valued Intuitionistic Fuzzy Sets carry a hesitation degree alongside membership, so very dark pixels are treated as uncertain rather than simply black.</p></div>
+      <div class="card "><span class="num">3</span><h4>CLAHE with a clip limit</h4><p>Local contrast is equalised block by block at a clip limit of 8, which lifts detail without the global over-enhancement that HE produces.</p></div>
+      <div class="card "><span class="num">4</span><h4>Defuzzification as a brake</h4><p>A highlight modifier pulls contrast back down at the end. CLAHE alone scores higher on entropy but introduces noise; this trades a little of that back for stability.</p></div>
+      <div class="card "><span class="num">5</span><h4>Saturation kept honest</h4><p>Raising brightness in HSV pulls the value channel away from saturation and skews colour, so saturation is adjusted proportionally to the change.</p></div>
+      <div class="card "><span class="num">6</span><h4>No extra hardware</h4><p>The system stabilises facial visibility across times of day without an infrared emitter or cabin light aimed at the driver's face.</p></div>
+    </div>
+  </div></section>
+  <section class="cs"><div class="wrap">
+    <h2>Background</h2>
+    <p class="cs-title">The system works perfectly, right up until the sun goes down</p>
+<p>A driver has been on the road for six hours. It's past nine at night. The cabin is dark except for the dashboard glow and whatever the headlights throw back from the road. Their eyes start closing for a second longer than a blink. This is the exact moment a drowsiness detection system is supposed to earn its place, and the moment most of them stop working.</p><p>In the previous work I reviewed, systems were tested in good light. Put the same camera in a car at night, or driving into low sun, or through a tunnel, and the face the system depends on simply isn't legible anymore. That's the gap this project set out to close: not a better drowsiness detector, but one that still functions in the lighting conditions where drowsiness actually happens.</p>    <div class="cards">
+      <div class="card "><p class="k">CAMERA</p><h4>Yealink UVC30, 120&deg; FOV</h4></div>
+      <div class="card "><p class="k">COMPUTE</p><h4>NVIDIA Jetson AGX Xavier</h4></div>
+      <div class="card "><p class="k">STACK</p><h4>C++, ROS, OpenCV, TensorRT</h4></div>
+      <div class="card "><p class="k">PLACEMENT</p><h4>Windscreen, 59 cm from driver's face</h4></div>
+    </div><p class="small">Advised by Dr. Bima Sena Bayu Dewantara and Prof. Ir. Dadet Pramadihanto, M.Eng, Ph.D at PENS.</p>
+  </div></section>
+  <section class="cs"><div class="wrap">
+    <h2>Research</h2>
+    <p class="cs-title">Testing the enhancement layer before trusting the detector</p>
+<p>I treated image enhancement as the real problem, not as preprocessing. Before touching the drowsiness logic, I compared two published illumination-invariant methods head to head, on the same 1,000 frames: OptiFuzz, and Interval-Valued Intuitionistic Fuzzy Sets (IVIFS) combined with Retinex-based correction.</p><p>The detection pipeline downstream is only as good as the image it receives. A system that enhances brightness but introduces noise, or produces a beautiful image at 2.5 frames per second, hasn't solved the problem, it has moved it. So the comparison measured image quality and speed together, on the same frames.</p>    <div class="cards">
+      <div class="card "><p class="k">OPTIFUZZ</p><h4>11.0563</h4><p>entropy, 2.5 FPS</p></div>
+      <div class="card "><p class="k">IVIFS + RETINEX</p><h4>10.3472</h4><p>entropy, 14 FPS</p></div>
+    </div><p>OptiFuzz's block histogram equalisation produced the higher-entropy image, roughly 0.25 bits ahead, but it was also five and a half times slower, at 2.5 FPS. In a moving car, a system at 2.5 FPS is making a decision about a driver's alertness on roughly 400 milliseconds of stale information.</p><p>IVIFS held the structure that actually mattered. Its CLAHE clip limit prevents noise accumulating in homogeneous regions, so it preserved facial edges and cabin contours without the coarse blocking artefacts OptiFuzz introduced: slightly less entropy, substantially cleaner structure, and fast enough to run live. The headline number was not the deciding number. That's the finding.</p>    <figure class="shot narrow"><div class="frame"><img src="img/dfds-ivifs.jpg" alt="Seven-stage IVIFS pipeline on a night frame, each stage with its histogram" loading="lazy"></div><figcaption>The IVIFS pipeline stage by stage, each with its intensity histogram. The original spikes hard against zero; the fuzzy stages sharpen that spike, isolating the darkest, most uncertain pixels before CLAHE spreads the distribution across the full range. Defuzzification pulls some of that spread back in, trading peak contrast for a cleaner, more natural-looking frame.</figcaption></figure>
+  </div></section>
+  <section class="cs"><div class="wrap">
+    <h2>Define</h2>
+    <p class="cs-title">One constraint governed every decision after this point</p>
+<p>The system has to run in real time on hardware that fits in a car, in lighting conditions the camera was never designed for. Every subsequent choice traces back to this sentence: it ruled out the higher-quality enhancement method, set the processing budget, and determined what could and couldn't be computed per frame.</p>    <div class="cards">
+      <div class="card " style="background:var(--accent);border-color:var(--accent)"><p class="k" style="color:rgba(255,255,255,.7)">HARD REQUIREMENT</p><p style="color:#fff">Enhancement must not alter the geometry of the eyes and mouth. Eye and mouth aspect ratios are the fatigue signal: distort them and the correction is worse than the darkness.</p></div>
+      <div class="card "><p class="k">HARD CONSTRAINT</p><p>Minimum 20 lux for eyes, mouth and chin to stay resolvable; 640&times;480 frames published over ROS at 30 Hz; real time on the Jetson, not a curated still dataset.</p></div>
+    </div>
+  </div></section>
+  <section class="cs"><div class="wrap">
+    <h2>Ideation &amp; pipeline</h2>
+    <p class="cs-title">Nine stages between the camera and the detector</p>
+<p>Why enhance the image instead of training a more robust detector? Because a detector trained to handle darkness still has to see something. Enhancement fixes the input for every downstream stage at once: face detection, landmark extraction and expression classification all inherit the improvement.</p>    <div class="cards">
+      <div class="card "><p class="k"></p><h4>The face is unreadable in low light</h4><p>IVIFS with Retinex correction raises illumination without adding noise, keeping the bounding box and 68-point landmark detection viable.</p></div>
+      <div class="card "><p class="k"></p><h4>Eye size varies between drivers</h4><p>PERCLOS measures closure relative to each driver's own maximum open state, not a fixed threshold.</p></div>
+      <div class="card "><p class="k"></p><h4>A single frame can't tell a blink from drowsiness</h4><p>PERCLOS and yawning are computed over frame windows, not instants; a mouth open for 60 consecutive frames is a yawn.</p></div>
+    </div><p>No single technique did the job on its own. Each stage covers the previous one's weakness, and the last stage exists specifically to undo the excess of the one before it.</p>    <ul class="flow"><li>Frame</li><li class="ar">&rarr;</li><li class=d>Fuzzification</li><li class="ar">&rarr;</li><li>Intuitionistic fuzzification</li><li class="ar">&rarr;</li><li class=d>IVIFS</li><li class="ar">&rarr;</li><li>RGB &rarr; HSV</li><li class="ar">&rarr;</li><li class=a>CLAHE, clip 8</li><li class="ar">&rarr;</li><li>Linear enhancement</li><li class="ar">&rarr;</li><li>Dynamic range expansion</li><li class="ar">&rarr;</li><li>Saturation adjustment</li><li class="ar">&rarr;</li><li class=a>Defuzzification</li><li class="ar">&rarr;</li><li>To detector</li></ul>    <div class="cards">
+      <div class="card "><p class="k">01</p><h4>Fuzzification</h4><p>Pixels normalised to [0,1] and turned into membership and non-membership values.</p></div>
+      <div class="card "><p class="k">02</p><h4>Intuitionistic fuzzification</h4><p>A hesitation index is added, giving the image a representation of doubt that resists noise.</p></div>
+      <div class="card "><p class="k">03</p><h4>IVIFS</h4><p>Doubt is scaled into an interval, making the equalisation that follows adaptive to very low luminance.</p></div>
+      <div class="card "><p class="k">04</p><h4>RGB to HSV</h4><p>Brightness is separated from colour so the value channel can be worked on alone.</p></div>
+      <div class="card "><p class="k">05</p><h4>CLAHE, clip limit 8</h4><p>Local contrast equalised per block. This is where the histogram genuinely opens up.</p></div>
+      <div class="card "><p class="k">06</p><h4>Linear enhancement</h4><p>The value channel is stretched, bounded to avoid an excessive lift.</p></div>
+      <div class="card "><p class="k">07</p><h4>Dynamic range expansion</h4><p>Brightening bunches pixels at high grey levels; a piecewise function pushes them apart again.</p></div>
+      <div class="card "><p class="k">08</p><h4>Saturation adjustment</h4><p>Saturation is corrected against the mean gap between the S and V channels, keeping colour plausible.</p></div>
+      <div class="card dark"><p class="k">09</p><h4>Defuzzification</h4><p>Fuzzy values return to crisp intensities, with a highlight modifier subtracted to prevent extreme saturation.</p></div>
+    </div>
+  </div></section>
+  <section class="cs"><div class="wrap">
+    <h2>Design</h2>
+    <p class="cs-title">The monitoring GUI, and the numbers it had to surface</p>
+<p>A real-time GUI sat on top of the pipeline for visual monitoring and reporting. Its job was to make the intermediate state visible, because when a detection is wrong you need to know whether the image, the landmarks or the thresholds failed. EAR and MAR feed a decision tree producing five states: normal, glaring eyes, eyes closed temporary, sleeping, and yawning, which can co-occur with any of the eye states. The signal plot changes colour with the detected state, so a viewer sees the trend that produced a classification, not just the classification itself.</p>    <figure class="shot narrow"><div class="frame"><img src="img/dfds-landmarks.jpg" alt="Night frame with the eye and mouth regions boxed and enlarged, showing landmark points P1 to P6" loading="lazy"></div><figcaption>Six points per region are all the ratios need. P1 and P4 give the horizontal span, P2/P3 and P5/P6 the vertical, which is why enhancement must not shift the geometry, only the light.</figcaption></figure>    <div class="cards">
+      <div class="card "><p class="k">EAR</p><h4>Eye Aspect Ratio</h4><p>Below a threshold of 0.2 the frame counts toward PERCLOS, the percentage of time the eyes are closed.</p></div>
+      <div class="card "><p class="k">MAR</p><h4>Mouth Aspect Ratio</h4><p>Above 0.7 the frame counts toward the yawning indicator.</p></div>
+      <div class="card "><p class="k">HEAD POSE</p><h4>Yaw, pitch, roll</h4><p>Reported alongside the ratios, so a nodding head reads differently from a driver simply looking away.</p></div>
+    </div>
+  </div></section>
+  <section class="cs"><div class="wrap">
+    <h2>Testing &amp; iterations</h2>
+    <p class="cs-title">1,000 frames, measured stage by stage</p>
+<p>Entropy was computed across 1,000 frames at every stage of the pipeline. Reading the table left to right shows which step earns its place, and where the last one deliberately gives ground.</p>    <div class="cards">
+      <div class="card "><p style="font-size:28px;font-weight:800;margin:0 0 6px;color:var(--ink)">6.679</p><p>Original</p></div>
+      <div class="card "><p style="font-size:28px;font-weight:800;margin:0 0 6px;color:var(--ink)">8.075</p><p>Fuzzy</p></div>
+      <div class="card "><p style="font-size:28px;font-weight:800;margin:0 0 6px;color:var(--ink)">8.021</p><p>Intuitionistic fuzzy</p></div>
+      <div class="card "><p style="font-size:28px;font-weight:800;margin:0 0 6px;color:var(--ink)">9.642</p><p>IVIFS</p></div>
+      <div class="card "><p style="font-size:28px;font-weight:800;margin:0 0 6px;color:var(--ink)">11.091</p><p>CLAHE</p></div>
+      <div class="card "><p style="font-size:28px;font-weight:800;margin:0 0 6px;color:var(--ink)">10.250</p><p>Defuzzification</p></div>
+    </div>    <figure class="shot"><div class="frame"><img src="img/dfds-pipeline.jpg" alt="Three enhanced night frames with the driver's face detected and boxed" loading="lazy"></div><figcaption>Face detection on the enhanced frames: eyes open, mouth speaking, mouth wide in a yawn.</figcaption></figure>    <figure class="shot"><div class="frame"><img src="img/dfds-detection.jpg" alt="The same three frames with facial landmarks resolved across the eyes, nose and mouth" loading="lazy"></div><figcaption>The same frames with PFLD landmarks resolved. This is the step that either survives the darkness or doesn't, and the one the 67% figure counts.</figcaption></figure><p>CLAHE produces the highest entropy of any stage, and taking it as the final output would have made the strongest-looking number. It also produces excessive noise on some frames. Defuzzification drops entropy to 10.250 and that drop is the point: it acts as a filter against over-enhancement.</p><p>The end-to-end check was landmark detection: 670 of 1,000 frames resolved correctly after enhancement. One visible artefact remains: a closed mouth still reporting a non-zero yawning value, because the indicator updates across a window of frames rather than every frame.</p>
+  </div></section>
+  <section class="cs"><div class="wrap">
+    <h2>Result &amp; final thoughts</h2>
+    <p class="cs-title">Published, and honest about what's left</p>
+<p>The work was published and presented at the International Electronics Symposium 2025 as &ldquo;Low Contrast Enhancement for Facial Feature Expression&rdquo;. It shows that a fuzzy, Retinex-informed pre-processing stage makes facial features detectable at night without touching the detector behind it, and without adding hardware.</p><p>What I take from it is the value of picking the right measure early. Entropy, not a brighter-looking picture, is what let the pipeline be argued about stage by stage, and what justified deliberately giving back some contrast at the final step.</p>    <div class="panel"><span class="tag">What I'd do next</span><div class="cols"><p>The gap between 14 FPS and 8 FPS is the honest cost of the interface: a real tradeoff made in favour of visibility, worth naming rather than reporting only the faster number.</p><p>80% accuracy is a research result, not a deployment result. A production bar would need testing across far more drivers, vehicle types, and longer continuous sessions.</p><p>The 20 lux floor is a real boundary. Below it, no visible-spectrum enhancement recovers a usable face; solving genuinely dark conditions likely means moving to infrared.</p></div></div>
+  </div></section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Driver Fatigue Detection System &middot; IES 2025</span>
+    <a href="index.html#dfds">Back to portfolio &rarr;</a>
+  </div>
+</footer>
+
+</body>
+</html>

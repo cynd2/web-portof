@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KAI HMI Case Study | Cindy Cetta Khairunnisa</title>
+<meta name="description" content="Case study: KAI HMI.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="case.css">
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <strong><a href="index.html" style="color:inherit;text-decoration:none">Cindy Cetta Khairunnisa</a></strong>
+    <nav aria-label="Main">
+      <ul>
+        <li><a href="index.html#education">Education</a></li>
+        <li><a href="index.html#projects">Projects</a></li>
+        <li><a href="index.html#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap cs-top">
+    <a class="back" href="index.html#kai-hmi">&larr; Back to portfolio</a>
+    <p class="eyebrow">Case study</p>
+    <h1 class="cs-h1">Making an invisible analog system <em>legible</em> to an operator.</h1>
+    <p class="cs-lede">A touchscreen HMI for the air conditioning system on a KAI KA-612 railway carriage, replacing a sealed relay panel with something a crew member can read at a glance.</p>
+    <dl class="cs-meta"><div><dt>ROLE</dt><dd>HMI Designer &amp; Use Case Analyst</dd></div><div><dt>YEAR</dt><dd>2024 &middot; PT. INKA Multi Solusi</dd></div><div><dt>STACK</dt><dd>WAGO PFC200, CODESYS (Structured Text)</dd></div></dl>
+    <ul class="chips"><li><a class=primary href="https://www.figma.com/design/snLEw2bLuxiTDW29Ds8sr2/HMI?node-id=0-1" target="_blank" rel="noopener">Open the Figma file</a></li></ul>
+    <figure class="shot narrow" style="margin-top:32px"><div class="frame"><img src="img/kai-hmi-homepage.jpg" alt="Monitoring Component screen with the full cooling loop energised" loading="lazy"></div><figcaption>Monitoring Component: the refrigeration loop for the carriage, drawn so the screen matches the machine.</figcaption></figure>
+  </div>
+
+  <section class="cs"><div class="wrap">
+    <h2>The problem</h2>
+    <p class="cs-title">How to automate the air conditioning with a PLC and make its operation visible on an HMI?</p>
+<p>The KA-612 air conditioning ran on an analog circuit of relays, contactors and breakers: bulky, hard to modify, and silent about its own state.</p><p>A fault could sit in any of a dozen places, and finding it meant opening the panel and tracing the circuit by hand on a moving train.</p>
+  </div></section>
+  <section class="cs"><div class="wrap">
+    <h2>The solution</h2>
+    <p class="cs-title">Automating control, making it visible</p>
+    <div class="cards">
+      <div class="card "><p class="k"></p><h4>Automatic mode</h4><p>AUTO drives the compressors from carriage temperature thresholds, so the PLC holds the setpoint instead of an operator watching a dial.</p></div>
+      <div class="card "><p class="k"></p><h4>Component-level visibility</h4><p>Compressor, condenser, evaporator and valve are drawn individually, each coloured by its live PLC input rather than by decoration.</p></div>
+      <div class="card "><p class="k"></p><h4>Faults by failure class</h4><p>Eight named groups split the faults, so a red lamp always answers which component failed and what kind of failure it was.</p></div>
+      <div class="card "><p class="k"></p><h4>Answers on the panel</h4><p>The questions crews ask when cooling stops are answered on the screen itself, instead of in a manual kept somewhere else.</p></div>
+    </div>    <div class="cards">
+      <div class="card "><div class="frame" style="background:#fff;border-radius:8px;overflow:hidden"><img src="img/kai-control.png" alt="Control screen showing actual and set point values" loading="lazy"></div><p class="small" style="margin-top:8px">Control: actual reading above, set point below.</p></div>
+      <div class="card "><div class="frame" style="background:#fff;border-radius:8px;overflow:hidden"><img src="img/kai-hmi-monitoring-faults.jpg" alt="Monitoring State screen with fault lamps" loading="lazy"></div><p class="small" style="margin-top:8px">Monitoring State: faults grouped by class.</p></div>
+      <div class="card "><div class="frame" style="background:#fff;border-radius:8px;overflow:hidden"><img src="img/kai-faq.png" alt="FAQ screen with collapsible rows" loading="lazy"></div><p class="small" style="margin-top:8px">FAQ: answered on the panel.</p></div>
+    </div>
+  </div></section>
+  <section class="cs"><div class="wrap">
+    <h2>Background</h2>
+    <p class="cs-title">An analog AC panel can be switched, but it can't be read</p>
+<p>Something is wrong with the AC, and the only way to find out what is to open the panel. With a relay panel you open the cabinet and trace the circuit by hand, on a moving train. With an HMI you read the temperature and see which component stopped, without opening the panel. So: automate the control with a PLC, and make the result visible on a screen.</p>    <div class="cards">
+      <div class="card "><p class="k">CONTROLLER</p><h4>WAGO PFC200 750-8212</h4></div>
+      <div class="card "><p class="k">LOGIC</p><h4>Structured Text in CODESYS</h4></div>
+      <div class="card "><p class="k">CARRIAGE</p><h4>Two AC units, two compressors each</h4></div>
+      <div class="card "><p class="k">MY SEAT</p><h4>Six months at INKA, beside the PLC engineer</h4></div>
+    </div>
+  </div></section>
+  <section class="cs"><div class="wrap">
+    <h2>Research</h2>
+    <p class="cs-title">Learn the machine before drawing the screen</p>
+<p class="small">Input came from the project lead, a wiring engineer, a panel operator and an AC system engineer. Four findings shaped the design.</p>    <div class="cards wide">
+      <div class="card "><p class="k">FINDING 1</p><h4>Operators need to know what went wrong, not just that something went wrong</h4><p>When the system gives only a general error, troubleshooting still depends on checking the physical panel one component at a time.</p><p>Different faults can point to different parts of the AC system, so the interface needs to distinguish between them.</p><p>The final HMI therefore included component monitoring, fault monitoring and error handling, not a simple ON/OFF state.</p></div>
+      <div class="card "><p class="k">FINDING 2</p><h4>The HMI must reflect the real state of the machine</h4><p>Every value shown needs to correspond to a real signal coming from the system.</p><p>Operators need an overview first, with the ability to inspect individual components when something changes.</p></div>
+      <div class="card "><p class="k">FINDING 3</p><h4>What can be displayed is limited by the signals the system actually provides</h4><p>We cannot display information that does not exist as a physical signal in the panel.</p><p>The HMI has to be designed around the inputs and outputs that can actually be connected to the PLC.</p></div>
+      <div class="card "><p class="k">FINDING 4</p><h4>Complex AC behaviour needs to be translated into simple operator decisions</h4><p>Operators should not need to understand the entire control logic just to know what action to take.</p><p>Showing system state, component status and control values separately makes complex information easier to interpret.</p></div>
+    </div>    <div class="cards">
+      <div class="card "><p class="k">DOCUMENT</p><h4>Handbook of Air Conditioning and Refrigeration</h4><p>2nd edition, McGraw-Hill. The refrigeration cycle from first principles.</p></div>
+      <div class="card "><p class="k">DOCUMENT</p><h4>Technical Specification, 20,000 kCal/hr Rev A</h4><p>IMS unit spec: the actual capacity, components and ratings on this carriage.</p></div>
+      <div class="card "><p class="k">DOCUMENT</p><h4>Kerja Praktik report</h4><p>My own report on controlling and monitoring the KA 612 train AC unit with a PLC at PT. INKA Multi Solusi, written with teammates.</p></div>
+    </div>
+  </div></section>
+  <section class="cs"><div class="wrap">
+    <h2>The mechanism</h2>
+    <p class="cs-title">How the refrigeration system actually flows</p>
+    <figure class="shot narrow"><div class="frame"><img src="img/kai-io-mapping.jpg" alt="Refrigeration system diagram: two parallel AC circuits through evaporator, accumulator, compressor, condenser and expansion valve" loading="lazy"></div><figcaption>Two parallel refrigeration circuits, one per AC unit, each moving refrigerant through the same four stages: evaporation, compression, condensation, expansion. Source: PT. IMS production documentation.</figcaption></figure>    <div class="cards wide">
+      <div class="card "><p class="k">01 &middot; EVAPORATOR</p><h4>Heat enters through the evaporator</h4><p>Return air passes over the evaporator coil, where the refrigerant absorbs heat and evaporates into gas. The evaporator fan pushes the cooled air back into the carriage.</p></div>
+      <div class="card "><p class="k">02 &middot; COMPRESSOR</p><h4>The compressor raises pressure</h4><p>Low-pressure gas passes through the accumulator, which filters out remaining liquid, before reaching the compressor. HLPS (High Low Pressure Switch) can shut the compressor down outside a safe range.</p></div>
+      <div class="card "><p class="k">03 &middot; CONDENSER</p><h4>The condenser releases heat to outside air</h4><p>High-pressure, high-temperature gas condenses into liquid on the condenser coil, then passes through a filter dryer to remove moisture and debris.</p></div>
+      <div class="card "><p class="k">04 &middot; EXPANSION VALVE</p><h4>The expansion valve resets the cycle</h4><p>The thermal expansion valve and solenoid valve drop the refrigerant's pressure and temperature before it returns to the evaporator. A sight glass lets a technician confirm flow.</p></div>
+    </div>
+  </div></section>
+  <section class="cs"><div class="wrap">
+    <h2>The control logic</h2>
+    <p class="cs-title">What decides when each component switches on</p>
+    <div class="cards wide">
+      <div class="card "><p class="k">01 &middot; MODES</p><h4>Five defined modes</h4><p>Four manual modes (OFF, VENT, HALF, FULL) and one automatic mode (AUTO). VENT runs only the evaporator fans, HALF one refrigeration cycle, FULL both, and AUTO hands control to the PLC.</p></div>
+      <div class="card "><p class="k">02 &middot; THRESHOLDS</p><h4>Thresholds are precise</h4><p>Compressor 1 turns on at 23.9&deg;C and off below 22&deg;C. Compressor 2 turns on above 26&deg;C and off at 24&deg;C. Between these points sits a deliberate deadband, where the system holds its previous state.</p></div>
+      <div class="card "><p class="k">03 &middot; STANDARD</p><h4>The target range isn't arbitrary</h4><p>Every threshold keeps the carriage inside a legally defined comfort range: 22&ndash;26&deg;C and 60&ndash;70% relative humidity (Menkes RI No. 1077/2011).</p></div>
+      <div class="card "><p class="k">04 &middot; AUTO MODE</p><h4>AUTO refines the manual logic</h4><p>Even in AUTO, the PLC runs the same VENT, HALF and FULL behaviours. What changes is who decides when to switch: a person reading a thermostat, or a program reacting faster and more consistently.</p></div>
+    </div><p>The constraint that came out of all of it: every element on screen had to correspond to a signal the PLC could actually provide. The I/O list became the content inventory.</p>
+  </div></section>
+  <section class="cs"><div class="wrap">
+    <h2>Define</h2>
+    <p class="cs-title">Rooting design decisions in defined roles, not assumptions</p>
+<p>To make sure the interface served the people who would actually use it, I grounded every design decision in the two roles the use case analysis identified, rather than designing for an imagined generic operator.</p>    <div class="cards">
+      <div class="card "><p class="k">OPERATOR</p><p>Needs a quick read on system health and the ability to adjust the temperature setpoint. Shares Monitoring State, Monitoring Component, Control Set Point (Humidity) and FAQ with Maintenance.</p></div>
+      <div class="card "><p class="k">MAINTENANCE</p><p>Needs per-component detail during diagnosis and servicing. Works from the same shared feature set as Operator, minus temperature control.</p></div>
+    </div><p>The interesting finding is that these two roles overlap almost entirely except for one control. That single difference became a real design decision: rather than two separate interfaces, one shared interface with a single permission boundary.</p>
+  </div></section>
+  <section class="cs"><div class="wrap">
+    <h2>Ideation &amp; user flow</h2>
+    <p class="cs-title">Three screens, split by the question being asked</p>
+<p>The PLC's programmability made per-component state exposure possible in a way the analog circuit structurally could not. That turned one pain point into the whole information architecture: separate &ldquo;what should it do&rdquo; from &ldquo;is it running&rdquo; from &ldquo;what is broken&rdquo;.</p>    <div class="cards wide">
+      <div class="card "><p class="k">ENTRY</p><h4>Car selection</h4><p>Pick the carriage, then the AC unit, AC 1 or AC 2.</p></div>
+      <div class="card "><p class="k">CONTROL</p><h4>What should it do?</h4><p>Actual against set point for temperature and humidity, adjusted with paired step buttons.</p></div>
+      <div class="card "><p class="k">MONITORING COMPONENT</p><h4>Is it running?</h4><p>The refrigeration loop as a diagram. Parts turn green as the cooling sequence energises them.</p></div>
+      <div class="card "><p class="k">MONITORING STATE</p><h4>What is broken?</h4><p>Eight failure classes as grouped lamps and readings, plus overall AC status.</p></div>
+    </div>    <div class="cards">
+      <div class="card "><p class="k">NFB</p><p>Power supply intact, per component</p></div>
+      <div class="card "><p class="k">HLPS</p><p>Pressure fault: damage, immediate action</p></div>
+      <div class="card "><p class="k">TPCP</p><p>Thermal protection working</p></div>
+      <div class="card "><p class="k">SOLENOID VALVE</p><p>Valve open or closed</p></div>
+      <div class="card "><p class="k">VOLTAGE</p><p>Per phase: R, S, T</p></div>
+      <div class="card "><p class="k">CURRENT</p><p>Per compressor: R, S, T</p></div>
+      <div class="card "><p class="k">FAULT MONITORING</p><p>PHCR and OUFR protection relays</p></div>
+      <div class="card "><p class="k">AC STATUS</p><p>Overall unit state, green or red</p></div>
+    </div>
+  </div></section>
+  <section class="cs"><div class="wrap">
+    <h2>Design</h2>
+    <p class="cs-title">Colour only ever means state</p>
+<p>Process graphics stay grey. Green means energised, red means faulted, and nothing else on screen competes for that vocabulary. Seven-segment numerals for readings, one navy bar for context, and touch targets sized for a gloved hand on a moving train.</p>    <div class="cards">
+      <div class="card "><div class="frame" style="background:#fff;border-radius:8px;overflow:hidden"><img src="img/kai-hmi-homepage.jpg" alt="Full cooling loop energised" loading="lazy"></div><p class="small" style="margin-top:8px">Full loop energised, including the solenoid valve and evaporator.</p></div>
+      <div class="card "><div class="frame" style="background:#fff;border-radius:8px;overflow:hidden"><img src="img/kai-hmi-monitoring-healthy.jpg" alt="Monitoring State for AC 2 with the overall status lamp green" loading="lazy"></div><p class="small" style="margin-top:8px">AC 2 with the overall status lamp green: one glance settles whether the unit is serviceable.</p></div>
+    </div><p class="small">Colour and type follow the company's HMI design system. Status colour is reserved for exactly four meanings: default, on, off, warning. Typeface is Montserrat, with 20 px headlines, 14&ndash;16 px body and 10&ndash;12 px buttons.</p>    <div class="swatches"><div class="swatch"><div style="background:#1F3B6B"></div><span>Navy</span></div><div class="swatch"><div style="background:#2E9E5B"></div><span>Green</span></div><div class="swatch"><div style="background:#D93B2B"></div><span>Red</span></div><div class="swatch"><div style="background:#E39B26"></div><span>Warning</span></div></div>
+  </div></section>
+  <section class="cs"><div class="wrap">
+    <h2>Testing &amp; iterations</h2>
+    <p class="cs-title">Validated in simulation, not on the panel</p>
+<p>The physical panel wasn't available during the internship, so every screen was validated against the CODESYS simulation: forcing each digital input, checking that the right component changed colour, the right lamp went red, and the right group on Monitoring State reacted.</p><p>That catches wiring and mapping errors. It doesn't tell you whether an operator finds the fault fast enough under pressure. Running that test with real crew, on real hardware, is the honest gap in this project.</p>
+  </div></section>
+  <section class="cs"><div class="wrap">
+    <h2>Result &amp; final thoughts</h2>
+    <p class="cs-title">A fault now has a name and a location</p>
+<p>The interface turns a sealed analog circuit into something an operator can read: which unit, which component, which failure class, and what the carriage actually feels like right now. Diagnosis moves from opening a panel to reading a screen.</p><p>The lesson I keep is that the I/O list is the brief. On an industrial panel you can't design a state the controller can't report. Once I accepted that, the screens organised themselves around real signals rather than around what looked tidy.</p>    <div class="panel"><span class="tag">What I'd do next</span><div class="cols"><p>Test fault-finding time with actual crew on the physical panel, against the analog baseline.</p><p>Add fault history, so an intermittent problem is still visible after the lamp goes green again.</p><p>Check the lamp palette for colour-vision deficiency: green and red alone carry too much of the meaning.</p></div></div>
+  </div></section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>KAI HMI &middot; Jan &ndash; Jun 2024</span>
+    <a href="index.html#kai-hmi">Back to portfolio &rarr;</a>
+  </div>
+</footer>
+
+</body>
+</html>
