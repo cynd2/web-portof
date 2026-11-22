@@ -34,7 +34,7 @@
     <div class="hero2-in">
       <span class="h2-badge"><svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M8 0l1.7 4.8L14.5 6.5 9.7 8.2 8 13l-1.7-4.8L1.5 6.5l4.8-1.7z"/></svg>Open to junior backend roles</span>
       <h1>Hi, I'm <span class="grad">Cindy Cetta Khairunnisa</span></h1>
-      <p class="h2-sub">Hands-on software engineering experience across CI/CD automation, systems integration, and embedded control logic. I build and test C#/.NET and C++ applications, automate build and test pipelines, and integrate software with hardware. Seeking a junior backend development role.</p>
+      <p class="h2-sub">Software engineering experience in C#/.NET, REST APIs, unit testing, Jenkins CI and webhook automation. Experience building and testing applications, automating build and deployment pipelines, and integrating software with hardware. Seeking a junior backend development role.</p>
       <div class="h2-cta">
         <a class="h2-btn pri" href="#projects">View projects <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
         <a class="h2-btn" href="https://github.com/cynd2" target="_blank" rel="noopener">GitHub</a>
@@ -119,7 +119,7 @@
       <p class="section-title">Projects</p>
       <div class="bento">
         <article class="pcard feat" id="meeting-room">
-          <img class="pcard-img" src="img/occ-overview.jpg" alt="Occupancy dashboard showing meeting rooms as Free, Occupied or Ghost" loading="lazy">
+          <a class="pcard-media" href="https://github.com/cynd2/meetingroom-occupancy" target="_blank" rel="noopener" aria-label="View Repository"><img class="pcard-img" src="img/occ-overview.jpg" alt="Occupancy dashboard showing meeting rooms as Free, Occupied or Ghost" loading="lazy"><span class="pcard-hover">View Repository &rarr;</span></a>
           <div class="pcard-body">
             <h3>Meeting Room Occupancy Detection</h3>
             <p class="pcard-sum">A monitoring dashboard that compares Google Calendar bookings with camera-based person detection, so employees can trust the room calendar again.</p>
@@ -129,8 +129,30 @@
             <div class="pbtns"><a class="btn" href="https://github.com/cynd2/meetingroom-occupancy" target="_blank" rel="noopener">View Repository<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3H3v10h10v-3M9 3h4v4M13 3L7 9"/></svg></a><a class="btn" href="https://www.figma.com/proto/VTDtxxxeZedE5S0acYRmar/Meeting-Room-Dashboard?node-id=3-415&amp;scaling=scale-down&amp;content-scaling=fixed&amp;page-id=0%3A1&amp;starting-point-node-id=3%3A415&amp;show-proto-sidebar=1" target="_blank" rel="noopener">View Prototype<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3H3v10h10v-3M9 3h4v4M13 3L7 9"/></svg></a><a class="btn" href="meeting-room.html">Read Case Study</a></div>
           </div>
         </article>
+        <article class="pcard" id="n8n-openproject">
+          <a class="pcard-media" href="https://github.com/cynd2/devflow-sync" target="_blank" rel="noopener" aria-label="View Repository"><img class="pcard-img wide-shot" src="img/n8n-workflow.png" alt="n8n workflow canvas for the GitLab to OpenProject automation" loading="lazy"><span class="pcard-hover">View Repository &rarr;</span></a>
+          <div class="pcard-body">
+            <h3>GitLab &rarr; OpenProject Workflow Automation</h3>
+            <p class="pcard-sum">An n8n workflow that reads the OpenProject work package ID from branch, merge request and commit names and updates its status automatically when code is pushed, reviewed and merged.</p>
+            <ul class="ptags"><li>n8n</li><li>GitLab webhooks</li><li>OpenProject API</li></ul>
+            <p class="pcard-k">Key Results</p>
+            <ul class="pres"><li>Removed manual status-sync errors between development and QA tracking.</li><li>Branches with no work package ID are caught and routed to error alerts instead of failing silently.</li><li>Handles push, merge request, comment and CI job events.</li></ul>
+          <div class="pbtns"><a class="btn" href="https://github.com/cynd2/devflow-sync" target="_blank" rel="noopener">View Repository<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3H3v10h10v-3M9 3h4v4M13 3L7 9"/></svg></a><a class="btn" href="n8n-openproject.html">Read Case Study</a></div>
+          </div>
+        </article>
+        <article class="pcard" id="jenkins-cicd">
+          <a class="pcard-media" href="https://github.com/cynd2/webapplication" target="_blank" rel="noopener" aria-label="View Repository"><img class="pcard-img" src="img/jenkins-pipeline.png" alt="Jenkins pipeline stage view" loading="lazy"><span class="pcard-hover">View Repository &rarr;</span></a>
+          <div class="pcard-body">
+            <h3>Jenkins CI/CD for an ASP.NET Web App</h3>
+            <p class="pcard-sum">A Jenkins pipeline that builds an ASP.NET web application on every change and turns it into an installable Linux package.</p>
+            <ul class="ptags"><li>Jenkins</li><li>ASP.NET</li><li>.NET</li><li>Linux (.deb)</li><li>systemd</li></ul>
+            <p class="pcard-k">Key Results</p>
+            <ul class="pres"><li>Pipeline polls the repository every 5 minutes and runs restore, build and self-contained publish for linux-x64.</li><li>Packages the published app as a <code>.deb</code> with a systemd service and post-install script, then archives it as a build artifact.</li><li>Pipeline is parameterised (app name, version, runtime), so the same Jenkinsfile can be reused.</li></ul>
+            <div class="pbtns"><a class="btn" href="https://github.com/cynd2/webapplication" target="_blank" rel="noopener">View Repository<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3H3v10h10v-3M9 3h4v4M13 3L7 9"/></svg></a><a class="btn" href="jenkins-cicd.html">Read Case Study</a></div>
+          </div>
+        </article>
         <article class="pcard" id="gazasafes">
-          <img class="pcard-img" src="img/gaza-home.jpg" alt="GazaSafes homepage hero" loading="lazy">
+          <a class="pcard-media" href="https://github.com/cynd2/gazasafes_website-v2" target="_blank" rel="noopener" aria-label="View Repository"><img class="pcard-img" src="img/gaza-home.jpg" alt="GazaSafes homepage hero" loading="lazy"><span class="pcard-hover">View Repository &rarr;</span></a>
           <div class="pcard-body">
             <h3>GazaSafes: Website &amp; Analytics Pipeline</h3>
             <p class="pcard-sum">A static product site for a fire-resistant safe seller, plus a self-hosted, privacy-first analytics backend feeding a Chart.js dashboard.</p>
@@ -141,7 +163,7 @@
           </div>
         </article>
         <article class="pcard" id="dfds">
-          <img class="pcard-img" src="img/dfds-histograms.jpg" alt="Night frames before and after enhancement, with histograms" loading="lazy">
+          <a class="pcard-media" href="dfds.html" aria-label="Read Case Study"><img class="pcard-img" src="img/dfds-histograms.jpg" alt="Night frames before and after enhancement, with histograms" loading="lazy"><span class="pcard-hover">Read Case Study &rarr;</span></a>
           <div class="pcard-body">
             <h3>DFDS: Driver Fatigue Detection</h3>
             <p class="pcard-sum">A nine-stage enhancement pipeline that lets a drowsiness detector work on dark bus-cabin footage without changing the detector itself.</p>
@@ -152,7 +174,7 @@
           </div>
         </article>
         <article class="pcard" id="kai-hmi">
-          <img class="pcard-img" src="img/kai-hmi-homepage.jpg" alt="Full cooling-mode homepage of the railway AC HMI" loading="lazy">
+          <a class="pcard-media" href="kai-hmi.html" aria-label="Read Case Study"><img class="pcard-img" src="img/kai-hmi-homepage.jpg" alt="Full cooling-mode homepage of the railway AC HMI" loading="lazy"><span class="pcard-hover">Read Case Study &rarr;</span></a>
           <div class="pcard-body">
             <h3>KAI HMI: Railway AC Control</h3>
             <p class="pcard-sum">A PLC-driven touchscreen operator panel replacing an analog relay circuit for a railway carriage's air conditioning.</p>
@@ -163,7 +185,7 @@
           </div>
         </article>
         <article class="pcard" id="safeledger">
-          <img class="pcard-img" src="img/safeledger-chat.jpg" alt="WhatsApp chat recording a transaction" loading="lazy">
+          <a class="pcard-media" href="safeledger.html" aria-label="Read Case Study"><img class="pcard-img" src="img/safeledger-chat.jpg" alt="WhatsApp chat recording a transaction" loading="lazy"><span class="pcard-hover">Read Case Study &rarr;</span></a>
           <div class="pcard-body">
             <h3>SafeLedger WA: WhatsApp Financial Recording</h3>
             <p class="pcard-sum">A WhatsApp bot that lets a workshop owner log expenses by text, voice note or receipt photo, with no spreadsheet.</p>
