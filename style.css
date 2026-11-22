@@ -286,3 +286,24 @@ footer .wrap { justify-content: center; }
   .pcard-img { filter: brightness(.82) saturate(.92); opacity: 1; }
   .pcard { box-shadow: none; }
 }
+
+/* ===== v2: image links to repo on hover/click ===== */
+.pcard-media { position: relative; display: block; overflow: hidden; text-decoration: none; }
+.pcard.feat .pcard-media { width: 46%; flex: none; }
+.pcard.feat .pcard-media .pcard-img { width: 100%; height: 100%; }
+.pcard-media .pcard-img { transition: transform .35s ease, filter .35s ease; }
+.pcard-hover { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; color: #fff; background: rgba(15,15,15,.55); opacity: 0; transition: opacity .25s ease; }
+.pcard-media:hover .pcard-hover, .pcard-media:focus-visible .pcard-hover { opacity: 1; }
+.pcard-media:hover .pcard-img { transform: scale(1.04); }
+@media (hover: none) { .pcard-hover { display: none; } }
+@media (max-width: 860px) { .pcard.feat .pcard-media { width: 100%; } .pcard.feat .pcard-media .pcard-img { aspect-ratio: 16/9; } }
+
+/* ===== v2: text-only project cards ===== */
+.pcard.noimg .pcard-body code { font-size: .9em; padding: 1px 6px; border-radius: 6px; background: color-mix(in srgb, var(--accent) 10%, transparent); }
+
+/* ===== v2: teal section pills (home page) ===== */
+section h2 { background: color-mix(in srgb, var(--accent) 10%, transparent); color: var(--accent); border-color: color-mix(in srgb, var(--accent) 22%, transparent); }
+.h2-badge { background: color-mix(in srgb, var(--accent) 10%, transparent); color: var(--accent); border-color: color-mix(in srgb, var(--accent) 22%, transparent); }
+
+/* wide screenshots (workflow canvas): show the whole image */
+.pcard-img.wide-shot { object-fit: contain; object-position: center; background: #1f1f1f; padding: 0; }
