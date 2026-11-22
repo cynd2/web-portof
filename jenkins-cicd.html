@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jenkins CI/CD for an ASP.NET Web App Case Study | Cindy Cetta Khairunnisa</title>
+<meta name="description" content="Case study: a Jenkins pipeline that builds an ASP.NET web application and packages it as an installable Linux .deb.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="case.css">
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <strong><a href="index.html" style="color:inherit;text-decoration:none">Cindy Cetta Khairunnisa</a></strong>
+    <nav aria-label="Main">
+      <ul>
+        <li><a href="index.html#education">Education</a></li>
+        <li><a href="index.html#projects">Projects</a></li>
+        <li><a href="index.html#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap cs-top">
+    <a class="back" href="index.html#jenkins-cicd">&larr; Back to portfolio</a>
+    <p class="eyebrow">Case study</p>
+    <h1 class="cs-h1">From a pushed commit to an installable package, <em>without</em> a manual step.</h1>
+    <p class="cs-lede">A Jenkins pipeline that builds an ASP.NET web application whenever the code changes and turns it into a Linux package that installs and runs as a service.</p>
+    <dl class="cs-meta"><div><dt>ROLE</dt><dd>Pipeline Builder</dd></div><div><dt>YEAR</dt><dd>2026</dd></div><div><dt>STACK</dt><dd>Jenkins, ASP.NET, .NET, dpkg, systemd</dd></div></dl>
+    <ul class="chips"><li><a class=primary href="https://github.com/cynd2/webapplication" target="_blank" rel="noopener">Repository</a></li></ul>
+  </div>
+
+  <section class="intro-video"><div class="wrap"><figure><video src="media/minimal-release-pipeline.mp4" autoplay muted loop playsinline preload="metadata" aria-label="Animation: a commit moves through the Jenkins pipeline and comes out as an installable package"></video></figure></div></section>
+  <section class="cs"><div class="wrap">
+    <h2>The problem</h2>
+    <p class="cs-title">A build that only works on one laptop is not a release.</p>
+<p>An ASP.NET application can be built and run from a development machine, but that is not something you can hand to a server. Someone has to remember the build steps, publish the right way for the target, copy files into place and set the app up to start on boot.</p><p>Done by hand, every release repeats those steps and can drift. The goal was to make the path from commit to a package that can be installed on a Linux machine a single automatic run.</p>
+  </div></section>
+  <section class="cs"><div class="wrap">
+    <h2>The solution</h2>
+    <p class="cs-title">Four decisions that make the pipeline repeatable</p>
+<div class="cards"><div class="card "><span class="num">1</span><h4>Let the repository trigger the build</h4><p>Jenkins checks the repository every five minutes and starts a run when something changed, so nobody has to remember to build.</p></div><div class="card "><span class="num">2</span><h4>Publish self-contained for the target</h4><p>The app is published for <code>linux-x64</code> with its runtime included, so the target machine does not need .NET installed first.</p></div><div class="card "><span class="num">3</span><h4>Package it as a .deb</h4><p>The published files, a systemd service and a post-install script are bundled into one Debian package, installed with a single command.</p></div><div class="card "><span class="num">4</span><h4>Parameterise instead of hard-code</h4><p>App name, version, runtime and service name are job parameters, so the same Jenkinsfile can build another app or a new version.</p></div></div>
+  </div></section>
+  <section class="cs"><div class="wrap">
+    <h2>Background</h2>
+    <p class="cs-title">A pipeline is only useful if its output is something you can install</p>
+<p>The application is a standard ASP.NET web app. The delivery target is a Linux server, where software is normally installed as a package and long-running programs are managed by systemd.</p><p>Jenkins sits between the two: it watches the code, runs the build and produces the package as a downloadable build artifact.</p><div class="cards"><div class="card "><p class="k">CI SERVER</p><h4>Jenkins</h4></div><div class="card "><p class="k">APPLICATION</p><h4>ASP.NET web app on .NET</h4></div><div class="card "><p class="k">PACKAGE</p><h4>Debian .deb</h4></div><div class="card "><p class="k">RUNTIME</p><h4>systemd service on Linux</h4></div></div>
+  </div></section>
+  <section class="cs"><div class="wrap">
+    <h2>Research</h2>
+    <p class="cs-title">Each choice came from what the target machine and the pipeline need</p>
+<p class="small">Decisions were read off the build requirements: what the server has installed, how it starts programs, and how Jenkins can see the code.</p><div class="cards wide"><div class="card "><p class="k">DECISION 1</p><h4>Polling the repository fits a Jenkins that cannot be reached from outside</h4><p>Polling every five minutes needs no inbound connection from the code host to Jenkins.</p><p>The cost is a delay of up to five minutes before a change is picked up.</p><img class="card-illus" src="img/j-poll.jpg" alt="Illustration: Jenkins polls the repository every five minutes, so the repository never needs to connect into Jenkins" loading="lazy"></div><div class="card "><p class="k">DECISION 2</p><h4>Self-contained publish removes a server prerequisite</h4><p>The runtime ships inside the package, so installing it does not depend on what .NET version the server has.</p><p>The package is larger as a result.</p><img class="card-illus" src="img/j-selfcontained.jpg" alt="Illustration: a self-contained linux-x64 package carries its own .NET runtime, so the server needs no .NET installed" loading="lazy"></div><div class="card "><p class="k">DECISION 3</p><h4>Packaging files are generated inside the Jenkinsfile</h4><p>The control file, service unit and post-install script are written at build time from the job parameters.</p><p>One file holds the whole pipeline, but the packaging pieces cannot be tested on their own.</p><img class="card-illus" src="img/j-packaging.jpg" alt="Illustration: the Jenkinsfile writes the control file, systemd unit and post-install script from its parameters and builds the .deb" loading="lazy"></div><div class="card "><p class="k">DECISION 4</p><h4>A systemd unit makes the app behave like a service</h4><p>The unit restarts the app if it stops and the post-install script enables it to start on boot.</p><p>The unit currently runs as root, which is acceptable for a demo and a known thing to tighten.</p><img class="card-illus" src="img/j-systemd.jpg" alt="Illustration: systemd restarts the app on failure and starts it on boot; the unit currently runs as root" loading="lazy"></div></div>
+  </div></section>
+  <section class="cs"><div class="wrap">
+    <h2>Define</h2>
+    <p class="cs-title">How might we turn a commit into an installable package without anyone repeating the steps?</p>
+<div class="cards"><div class="card " style="background:var(--accent);border-color:var(--accent)"><p class="k" style="color:rgba(255,255,255,.7)">THE DEVELOPER</p><p style="color:#fff">Pushes code and expects a build to follow, with a clear pass or fail and a file at the end.</p></div><div class="card "><p class="k">THE PERSON INSTALLING</p><p>Needs one package they can install on a Linux server and have running as a service.</p></div></div><p class="small">These two roles come from the shape of the delivery path, not from a formal study.</p>
+  </div></section>
+  <section class="cs"><div class="wrap">
+    <h2>Ideation</h2>
+    <p class="cs-title">Each manual step became one pipeline stage</p>
+<div class="cards wide"><div class="card "><p class="k">MANUAL STEP</p><h4>Remember to build</h4></div><div class="card "><p class="k">BECAME</p><p>A five-minute repository poll that starts the run.</p></div><div class="card "><p class="k">MANUAL STEP</p><h4>Publish the right way for the server</h4></div><div class="card "><p class="k">BECAME</p><p>A self-contained linux-x64 publish with the runtime parameterised.</p></div><div class="card "><p class="k">MANUAL STEP</p><h4>Copy files and set up the service</h4></div><div class="card "><p class="k">BECAME</p><p>A .deb with a systemd unit and a post-install script, archived as the build artifact.</p></div></div><div class="panel"><span class="tag">Why this solution</span><div class="cols"><p>A package is the format Linux servers already understand, so installing, upgrading and removing use tools the operator knows. A pile of copied files would need its own instructions.</p><p>Keeping the whole flow in one Jenkinsfile with parameters means the pipeline can be read top to bottom and reused for another application without rewriting it.</p></div></div>
+  </div></section>
+  <section class="cs"><div class="wrap">
+    <h2>Engineering</h2>
+    <p class="cs-title">One stage, one job</p>
+<p class="small">A declarative Jenkins pipeline with string parameters, a repository poll and a stage for each step from checkout to archive.</p><ul class="flow"><li>Checkout</li><li class="ar">&rarr;</li><li>Restore &amp; build</li><li class="ar">&rarr;</li><li>Publish</li><li class="ar">&rarr;</li><li>Package .deb</li><li class="ar">&rarr;</li><li class=a>Archive artifact</li></ul><div class="cards wide"><div class="card "><p class="k"></p><h4>Build and publish</h4><p>Restore and a Release build run first, then a publish for the chosen runtime, self-contained, into a <code>publish</code> folder.</p></div><div class="card "><p class="k"></p><h4>Package layout</h4><p>The published app is copied under <code>/opt/&lt;app&gt;</code>, with the control file in <code>DEBIAN</code> and the unit under <code>/etc/systemd/system</code>.</p></div><div class="card "><p class="k"></p><h4>Service and post-install</h4><p>The unit restarts the app on failure. The post-install script reloads systemd and enables the service so it starts on boot.</p></div><div class="card "><p class="k"></p><h4>Output</h4><p><code>dpkg-deb</code> builds <code>&lt;app&gt;_&lt;version&gt;.deb</code>, which the last stage archives as the build artifact.</p></div></div>
+  </div></section>
+  <section class="cs"><div class="wrap">
+    <h2>Testing &amp; iterations</h2>
+    <p class="cs-title">What the pipeline proves, and what it does not</p>
+<p>The pipeline proves that the code restores, builds and publishes, and that a package file is produced on every run. That is a real check: a change that breaks the build is caught within a few minutes.</p><img class="card-illus" src="img/j-testing.jpg" alt="Pipeline stages from the Jenkinsfile: checkout, restore, build, publish, package and archive run today; a test stage and an install check are still to add" loading="lazy" style="margin-bottom:20px"><div class="card "><p class="k">WHAT STAYED UNVALIDATED</p><p>There is no automated test stage, so a build that passes says the code compiles, not that it behaves correctly. The generated package has not been recorded here as installed and run on a target server, and the service runs as root. The version is a job parameter set by hand rather than taken from the repository.</p></div>
+  </div></section>
+  <section class="cs"><div class="wrap">
+    <h2>Result &amp; final thoughts</h2>
+    <p class="cs-title">A commit now ends in a package, not a to-do list</p>
+<p>The pipeline watches the repository, builds the application, publishes it for Linux and produces a versioned <code>.deb</code> with a service definition, archived on every successful run.</p><p>The lesson I would defend most is that a pipeline&rsquo;s output should be the thing you actually deliver. Producing an installable package, rather than just a green build, makes the next step obvious and repeatable.</p><div class="panel"><span class="tag">What&rsquo;s still open</span><div class="cols"><p>Add a test stage so a green run also means the code behaves, starting with unit tests for the controllers.</p><p>Run the service as a dedicated user instead of root, and derive the version from the repository instead of a parameter.</p><p>Install the package on a clean Linux machine from the pipeline to prove the service starts.</p></div></div>
+  </div></section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Jenkins CI/CD for an ASP.NET Web App</span>
+    <a href="index.html#jenkins-cicd">Back to portfolio &rarr;</a>
+  </div>
+</footer>
+
+</body>
+</html>
