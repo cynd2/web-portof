@@ -31,7 +31,7 @@
     <a class="back" href="index.html#meeting-room">&larr; Back to portfolio</a>
     <p class="eyebrow">Case study</p>
     <h1 class="cs-h1">Turning ghost bookings into information employees can <em>trust</em>.</h1>
-    <p class="cs-lede">A monitoring dashboard for meeting room occupancy at Formulatrix. AI-based detection checked against the calendar, so the booking system stops lying about which rooms are actually free.</p>
+    <p class="cs-lede">A monitoring dashboard for meeting room occupancy. AI-based detection checked against the calendar, so the booking system stops lying about which rooms are actually free.</p>
     <dl class="cs-meta"><div><dt>ROLE</dt><dd>System Architect &amp; Dashboard Designer</dd></div><div><dt>YEAR</dt><dd>2026</dd></div><div><dt>STACK</dt><dd>C#, .NET 8, ASP.NET Core, SQLite, ONNX Runtime, React</dd></div></dl>
     <ul class="chips"><li><a class=primary href="https://www.figma.com/proto/VTDtxxxeZedE5S0acYRmar/Meeting-Room-Dashboard?node-id=3-415&scaling=scale-down&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=3%3A415&show-proto-sidebar=1" target="_blank" rel="noopener">View prototype</a></li><li><a href="https://github.com/cynd2/meetingroom-occupancy" target="_blank" rel="noopener">Repository</a></li></ul>
     <figure class="shot" style="margin-top:32px"><div class="frame"><img src="img/occ-overview.jpg" alt="Meeting room status dashboard, all rooms view" loading="lazy"></div><figcaption>All Rooms: live status per room, refreshed every 60 seconds, with the last 15 minutes of activity under each card.</figcaption></figure>
@@ -44,13 +44,18 @@
     <div class="cards">
       <div class="card "><p class="k" style="color:#1F7A3D">FREE</p><p>No booking, no one inside. Safe to walk in.</p></div>
       <div class="card "><p class="k" style="color:#20447C">OCCUPIED</p><p>In use. Shows who booked it and when it ends, or how long it has been occupied with no booking at all.</p></div>
-      <div class="card "><p class="k" style="color:#8A4B12">GHOST</p><p>Booked but empty for long enough to count. A forgotten cancellation or a meeting that moved, holding a room hostage.</p></div>
+      <div class="card "><p class="k" style="color:#6B6F77">GHOST</p><p>Booked but empty for long enough to count. A forgotten cancellation or a meeting that moved, holding a room hostage.</p></div>
     </div>
   </div></section>
-  <section class="cs"><div class="wrap">
+  <section class="cs problem"><div class="wrap">
+    <div class="split">
+      <div class="split-text">
     <h2>The problem</h2>
     <p class="cs-title">The calendar said booked. The room was empty.</p>
 <p>Ghost bookings (forgotten cancellations, meetings that moved elsewhere) plus squatter situations, where a room is occupied without a reservation, made the calendar untrustworthy. Employees stopped believing it and walked floor by floor looking for a real vacancy instead.</p><p>Live camera feeds were considered and rejected. A feed answers &ldquo;who's inside&rdquo;, when the question an employee is actually asking is &ldquo;can I use this room&rdquo;. Solving the second question without answering the first became the constraint the whole system was built around.</p>
+      </div>
+      <figure class="split-media"><div class="vcrop"><video src="media/stick-ghost-warm.mp4" autoplay muted loop playsinline preload="metadata" aria-label="Animation: a person walks to a room the calendar says is booked, finds it empty and shrugs"></video></div></figure>
+    </div>
   </div></section>
   <section class="cs"><div class="wrap">
     <h2>The solution</h2>
@@ -65,7 +70,7 @@
   <section class="cs"><div class="wrap">
     <h2>Background</h2>
     <p class="cs-title">A booking system nobody trusted cost real working time</p>
-<p>Ghost and squatter bookings at Formulatrix produced a specific, repeated cost: employees losing time searching for a room that the calendar had already told them was unavailable. Once the calendar has been wrong a few times, people stop checking it and start walking the floors, which is slower for them and hides the problem from anyone who could fix it.</p><p>Nothing in the existing setup could distinguish a room that was booked from a room that was being used. Both looked identical in the booking data, so neither failure mode could be measured, let alone addressed.</p>    <div class="cards">
+<p>Ghost and squatter bookings produced a specific, repeated cost: employees losing time searching for a room that the calendar had already told them was unavailable. Once the calendar has been wrong a few times, people stop checking it and start walking the floors, which is slower for them and hides the problem from anyone who could fix it.</p><p>Nothing in the existing setup could distinguish a room that was booked from a room that was being used. Both looked identical in the booking data, so neither failure mode could be measured, let alone addressed.</p>    <div class="cards">
       <div class="card "><p class="k">BOOKING SOURCE</p><h4>Google Calendar</h4></div>
       <div class="card "><p class="k">OCCUPANCY SOURCE</p><h4>Unifi Protect cameras</h4></div>
       <div class="card "><p class="k">DETECTION</p><h4>AI-based, on snapshots</h4></div>
@@ -76,10 +81,10 @@
     <h2>Research</h2>
     <p class="cs-title">Decisions came from the people running the room, not a discovery phase</p>
 <p class="small">Input came from the team lead, the IT department, the calendar owner and a colleague review.</p>    <div class="cards wide">
-      <div class="card "><p class="k">DECISION 1</p><h4>A ghost flag needed a delay built in, or it would fire on every empty moment</h4><p>10 consecutive minutes empty while booked, before it counts as a ghost.</p><p>Still trigger a ghost even if someone left early and the booking hasn't officially ended.</p><p>One alert only, sent to the organiser. No repeated notifications, no manager escalation.</p><p>Built into <code>GhostBookingDetector</code> as a configurable threshold, with an <code>AlertSent</code> flag preventing duplicates.</p></div>
-      <div class="card "><p class="k">DECISION 2</p><h4>Employees only need free or booked. Ghost detection is a backend concern</h4><p>Simplify the dashboard to two employee-facing states: Free, from the camera, and Booked, from the calendar.</p><p>Show a 15-minute history line per room card, so viewers see the pattern, not just the instant.</p><p>Squatter incidents: record for facilities awareness, but don't send an alert to anyone.</p></div>
-      <div class="card "><p class="k">DECISION 3</p><h4>What could be built was decided by the infrastructure already in place</h4><p>Only the Unifi HTTP snapshot API is available. No direct RTSP stream access.</p><p>A camera ID per room, mapped separately from its calendar ID. The two systems don't share an identifier.</p><p>The Unifi NVR already keeps its own recordings, so the detection result is sufficient and no frames need storing.</p><p>The frame-storage answer became the architecture: an in-memory bytes pipeline, cutting storage from gigabytes to megabytes.</p></div>
-      <div class="card "><p class="k">DECISION 4</p><h4>The obvious model choice turned out to be a licensing problem, not a technical one</h4><p>SSD MobileNetV1, Apache 2.0, free for commercial use with no disclosure requirement.</p><p>V2's download was deprecated and its activation function isn't supported in ONNX Runtime for C#, so V1 stayed.</p><p>No GPU on the deployment server, so the model has to run efficiently on CPU alone.</p></div>
+      <div class="card "><p class="k">DECISION 1</p><h4>Ghosts are flagged only after 10 minutes empty</h4><p>10 consecutive minutes empty while booked, before it counts as a ghost.</p><p>Still trigger a ghost even if someone left early and the booking hasn't officially ended.</p><img class="card-illus" src="img/10-minutes-ghost.jpg" alt="Illustration: a booked, empty meeting room is flagged as a ghost after 10 minutes empty" loading="lazy"></div>
+      <div class="card "><p class="k">DECISION 2</p><h4>Employees only need free or booked. Ghost detection is a backend concern</h4><p>Simplify the dashboard to two employee-facing states: Free, from the camera, and Booked, from the calendar.</p><p>Show a 15-minute history line per room card, so viewers see the pattern, not just the instant.</p><img class="card-illus" src="img/be-user.jpg" alt="Illustration: employees see only Free (from camera) and Booked (from calendar); ghost detection stays a backend concern" loading="lazy"></div>
+      <div class="card "><p class="k">DECISION 3</p><h4>What could be built was decided by the infrastructure already in place</h4><p>A camera ID per room, mapped separately from its calendar ID. The two systems don't share an identifier.</p><p>The Unifi NVR already keeps its own recordings, so the detection result is sufficient and no frames need storing.</p><img class="card-illus" src="img/unifi-nvr.jpg" alt="Illustration: camera ID and calendar ID have no shared identifier; detection results flow through an in-memory bytes pipeline with no frames saved" loading="lazy"></div>
+      <div class="card "><p class="k">DECISION 4</p><h4>The obvious model choice turned out to be a licensing problem, not a technical one</h4><p>Using the SSD MobileNetV1 model: Apache 2.0, free for commercial use.</p><p>No GPU on the deployment server, so the model has to run efficiently on CPU alone.</p><img class="card-illus" src="img/model.jpg" alt="Illustration: SSD MobileNetV1, Apache 2.0 and free for commercial use, running on CPU only with no GPU" loading="lazy"></div>
     </div>      <div class="card "><p class="k">ONE DECISION WORTH KEEPING VISIBLE</p><h4>Why OrganizerEmail and RoomId are duplicated instead of joined</h4><p>A colleague reviewing the design flagged it as a normalisation violation. The duplication is intentional: <code>DetectionResult</code> is a self-contained verdict that must stay readable even if the source booking is later rescheduled or deleted. At nine rooms and one verdict a minute, the join cost was negligible next to that guarantee.</p></div>
   </div></section>
   <section class="cs"><div class="wrap">
@@ -93,17 +98,13 @@
   <section class="cs"><div class="wrap">
     <h2>Ideation</h2>
     <p class="cs-title">Each pain point turned into one mechanism</p>
-    <div class="cards wide">
-      <div class="card "><p class="k">PAIN POINT</p><h4>Ghost bookings make the calendar unreliable</h4></div>
-      <div class="card "><p class="k">BECAME</p><p>The three-state model, plus a 10-minute confirmation window before anything is called a Ghost.</p></div>
-      <div class="card "><p class="k">PAIN POINT</p><h4>Camera monitoring feels like surveillance</h4></div>
-      <div class="card "><p class="k">BECAME</p><p>Snapshot deletion immediately after classification, instead of a live feed anyone can watch.</p></div>
-    </div>    <div class="panel"><span class="tag">Why this solution</span><div class="cols"><p>Calendar data on its own can't detect either failure. A booking record looks the same whether the meeting happened or not. Only camera-based detection compared against the calendar can tell you the two disagree.</p><p>A binary booked/free model was rejected for the same reason: it has nowhere to put a mismatch. Ghost exists as a state precisely because it is the case where the calendar and the room disagree.</p></div></div>
+    <figure class="ideation-solo"><video src="media/minimal-ideation.mp4" autoplay muted loop playsinline preload="metadata" aria-label="Animation: each pain point turns into one mechanism"></video></figure>
+        <div class="panel"><span class="tag">Why this solution</span><div class="cols"><p>Calendar data on its own can't detect either failure. A booking record looks the same whether the meeting happened or not. Only camera-based detection compared against the calendar can tell you the two disagree.</p><p>A binary booked/free model was rejected for the same reason: it has nowhere to put a mismatch. Ghost exists as a state precisely because it is the case where the calendar and the room disagree.</p></div></div>
   </div></section>
   <section class="cs"><div class="wrap">
     <h2>Design</h2>
     <p class="cs-title">One colour per state, one badge per room</p>
-<p>Each room is a card with a status badge, and the whole card is tinted to match, so a floor reads as a block of colour before anyone reads a word of it. Monospaced numerals for times and counts keep the figures aligned down each column.</p>    <div class="swatches" style="margin:8px 0 20px"><div class="swatch"><div style="background:#3EA55C"></div><span>Free</span></div><div class="swatch"><div style="background:#D93B2B"></div><span>Occupied</span></div><div class="swatch"><div style="background:#E39B26"></div><span>Ghost</span></div></div><p class="small">Accessibility is the honest weak point: state is carried by colour and a text badge, but the two mismatch cases in the earlier build used the same badge word with a different tint, which colour alone cannot safely distinguish.</p>    <figure class="shot narrow"><div class="frame"><img src="img/occ-room-detail.jpg" alt="Room card MR.203 Bali, free, with next booking and a 15-minute activity trace" loading="lazy"></div><figcaption>Each card also carries a 15-minute presence trace: the line rises when someone is detected and falls when the room is empty.</figcaption></figure>
+<p>Each room is a card with a status badge, and the whole card is tinted to match, so a floor reads as a block of colour before anyone reads a word of it. Monospaced numerals for times and counts keep the figures aligned down each column.</p>    <div class="swatches" style="margin:8px 0 20px"><div class="swatch"><div style="background:#3EA55C"></div><span>Free</span></div><div class="swatch"><div style="background:#D93B2B"></div><span>Occupied</span></div><div class="swatch"><div style="background:#8B8F97"></div><span>Ghost</span></div></div><p class="small">Accessibility is the honest weak point: state is carried by colour and a text badge, but the two mismatch cases in the earlier build used the same badge word with a different tint, which colour alone cannot safely distinguish.</p>    <figure class="shot narrow"><div class="frame"><img src="img/occ-room-detail.jpg" alt="Room card MR.203 Bali, free, with next booking and a 15-minute activity trace" loading="lazy"></div><figcaption>Each card also carries a 15-minute presence trace: the line rises when someone is detected and falls when the room is empty.</figcaption></figure>
   </div></section>
   <section class="cs"><div class="wrap">
     <h2>Engineering</h2>
@@ -117,8 +118,24 @@
   </div></section>
   <section class="cs"><div class="wrap">
     <h2>Testing &amp; iterations</h2>
-    <p class="cs-title">Cutting the model down from five counters to three</p>
-<p>An earlier build carried a five-counter summary (All Rooms, Free, Occupied, Ghost, Squatted) and rendered both mismatch cases as tinted variants of the same two badges. Squatter was dropped and the strip reduced to All Rooms, Free and Occupied.</p><p>Two reasons. A room occupied without a booking is still just occupied to the person looking for a room, so it didn't change the answer they came for. And an amber card reading FREE next to a green card reading FREE asks the viewer to decode a tint, which is exactly the kind of ambiguity the state model was supposed to remove.</p>      <div class="card "><p class="k">WHAT STAYED UNVALIDATED</p><p>No usability testing was run. The 10-minute confirmation window in particular is a judgement call about how long someone might reasonably step out of a meeting, not a tested threshold. It's the single number deciding whether a Ghost flag gets trusted or ignored.</p></div>
+    <p class="cs-title">Person-detection evaluation</p>
+<p>The detector was scored against 6,169 hand-labelled frames from 17 room recordings (4,753 with a person, 1,416 empty), swept across confidence thresholds from 0.1 to 0.9.</p>
+<div class="tbl-wrap"><table class="tbl">
+<thead><tr><th>Setup</th><th>Precision</th><th>Recall</th><th>F1</th><th>False alarms</th><th>Missed people</th></tr></thead>
+<tbody>
+<tr><td>Full frame, threshold 0.3</td><td>98.4%</td><td>91.5%</td><td><b>94.8%</b></td><td>73</td><td>406</td></tr>
+<tr><td>Full frame, threshold 0.5</td><td>98.2%</td><td>83.6%</td><td>90.3%</td><td>73</td><td>781</td></tr>
+<tr><td>Region of interest, first attempt</td><td>100%</td><td>73.7%</td><td>84.9%</td><td>0</td><td>1,249</td></tr>
+<tr><td>Region of interest, final</td><td>100%</td><td>89.6%</td><td><b>94.5%</b></td><td>0</td><td>494</td></tr>
+</tbody></table></div>
+<div class="panel" style="margin:20px 0 16px"><span class="tag">Conclusion from the data</span><div class="cols">
+<p><b>The detector is cautious: it misses people more often than it invents them.</b> Precision stayed at about 98% or higher at every threshold, while recall fell from 91% to 13% as the threshold rose. A low threshold (0.3) gave the best F1 and was kept.</p>
+<p><b>Missed people matter more than false alarms here.</b> A missed person looks like an empty room, which could start a false Ghost flag. That is a reason the 10-minute window of consecutive empty readings matters, and I have not yet measured how well it covers these misses.</p>
+<p><b>All 73 false alarms came from one lobby camera.</b> A region-of-interest filter removed them, at the cost of 88 more missed people, so F1 dropped only from 94.8% to 94.5%.</p>
+<p><b>The first region-of-interest attempt was wrong.</b> It cut out four rooms entirely (741 people frames, all missed), dropping F1 to 84.9%. Redrawing the polygons fixed it.</p>
+<p><b>Misses are concentrated, not random.</b> Of 406 misses at threshold 0.3, 274 came from one room and 77 from another, so the weak spot is specific camera angles rather than the model as a whole.</p></div></div>
+<p class="small">Limits of this evaluation: one room supplies about half of all frames (3,008 of 6,169), so the overall figures lean on it. Frames were taken at 5 per second from screen recordings, so neighbouring frames are near-duplicates, not independent samples. The results show how the detector performs on this footage, not on every room or lighting condition.</p>
+<div class="card "><p class="k">WHAT STAYED UNVALIDATED</p><p>No usability testing was run. The 10-minute confirmation window in particular is a judgement call about how long someone might reasonably step out of a meeting, not a tested threshold. It's the single number deciding whether a Ghost flag gets trusted or ignored.</p></div>
   </div></section>
   <section class="cs"><div class="wrap">
     <h2>Result &amp; final thoughts</h2>
@@ -129,7 +146,7 @@
 
 <footer>
   <div class="wrap">
-    <span>Meeting Room Occupancy Detection &middot; Formulatrix</span>
+    <span>Meeting Room Occupancy Detection</span>
     <a href="index.html#meeting-room">Back to portfolio &rarr;</a>
   </div>
 </footer>
