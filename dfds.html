@@ -47,10 +47,15 @@
       <div class="card "><p style="font-size:28px;font-weight:800;margin:0 0 6px;color:var(--ink)">20 lux</p><p>The floor below which no amount of enhancement recovers a usable face.</p></div>
     </div><p class="small">Figures from the IES 2025 paper and the internship work at Politeknik Elektronika Negeri Surabaya (PENS).</p>
   </div></section>
-  <section class="cs"><div class="wrap">
+  <section class="cs problem wide-media"><div class="wrap">
+    <div class="split">
+      <div class="split-text">
     <h2>The problem</h2>
     <p class="cs-title">Fatigue detection cannot function in low-light conditions</p>
 <p>The World Health Organization estimates 1.9 million lives are at risk from road accidents worldwide, and driver drowsiness is one of the leading causes of the fatal ones. Vision-based fatigue detection is a reasonable answer to it: the eyes and mouth give the signal away.</p><p>The catch is that published systems are generally validated on faces in the visible light spectrum. Drivers work from morning to night. In a dark cabin, uneven light and shadow blur or erase the exact features the detector depends on, so the system fails silently at the hours fatigue matters most.</p><p>Simply brightening the image doesn't solve it either. Histogram Equalization and its adaptive variant over-enhance and amplify noise, which degrades interpretation rather than improving it. The detector doesn't produce a wrong answer in the dark; it produces no answer at all.</p>
+      </div>
+      <figure class="split-media"><video class="split-video" src="media/minimal-lowlight-fatigue.mp4" autoplay muted loop playsinline preload="metadata" aria-label="Animation: fatigue detection failing in a dark cabin"></video></figure>
+    </div>
   </div></section>
   <section class="cs"><div class="wrap">
     <h2>The solution</h2>
@@ -128,7 +133,7 @@
       <div class="card "><p style="font-size:28px;font-weight:800;margin:0 0 6px;color:var(--ink)">9.642</p><p>IVIFS</p></div>
       <div class="card "><p style="font-size:28px;font-weight:800;margin:0 0 6px;color:var(--ink)">11.091</p><p>CLAHE</p></div>
       <div class="card "><p style="font-size:28px;font-weight:800;margin:0 0 6px;color:var(--ink)">10.250</p><p>Defuzzification</p></div>
-    </div>    <figure class="shot"><div class="frame"><img src="img/dfds-pipeline.jpg" alt="Three enhanced night frames with the driver's face detected and boxed" loading="lazy"></div><figcaption>Face detection on the enhanced frames: eyes open, mouth speaking, mouth wide in a yawn.</figcaption></figure>    <figure class="shot"><div class="frame"><img src="img/dfds-detection.jpg" alt="The same three frames with facial landmarks resolved across the eyes, nose and mouth" loading="lazy"></div><figcaption>The same frames with PFLD landmarks resolved. This is the step that either survives the darkness or doesn't, and the one the 67% figure counts.</figcaption></figure><p>CLAHE produces the highest entropy of any stage, and taking it as the final output would have made the strongest-looking number. It also produces excessive noise on some frames. Defuzzification drops entropy to 10.250 and that drop is the point: it acts as a filter against over-enhancement.</p><p>The end-to-end check was landmark detection: 670 of 1,000 frames resolved correctly after enhancement. One visible artefact remains: a closed mouth still reporting a non-zero yawning value, because the indicator updates across a window of frames rather than every frame.</p>
+    </div>    <figure class="shot" style="max-width:560px;margin-left:auto;margin-right:auto"><div class="frame"><img src="img/dfds-pipeline.jpg" alt="Three enhanced night frames with the driver's face detected and boxed" loading="lazy"></div><figcaption>Face detection on the enhanced frames: eyes open, mouth speaking, mouth wide in a yawn.</figcaption></figure>    <figure class="shot" style="max-width:560px;margin-left:auto;margin-right:auto"><div class="frame"><img src="img/dfds-detection.jpg" alt="The same three frames with facial landmarks resolved across the eyes, nose and mouth" loading="lazy"></div><figcaption>The same frames with PFLD landmarks resolved. This is the step that either survives the darkness or doesn't, and the one the 67% figure counts.</figcaption></figure><p>CLAHE produces the highest entropy of any stage, and taking it as the final output would have made the strongest-looking number. It also produces excessive noise on some frames. Defuzzification drops entropy to 10.250 and that drop is the point: it acts as a filter against over-enhancement.</p><p>The end-to-end check was landmark detection: 670 of 1,000 frames resolved correctly after enhancement. One visible artefact remains: a closed mouth still reporting a non-zero yawning value, because the indicator updates across a window of frames rather than every frame.</p>
   </div></section>
   <section class="cs"><div class="wrap">
     <h2>Result &amp; final thoughts</h2>
