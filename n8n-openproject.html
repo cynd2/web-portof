@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GitLab to OpenProject Automation Case Study | Cindy Cetta Khairunnisa</title>
+<meta name="description" content="Case study: GitLab to OpenProject Workflow Automation, an n8n workflow that keeps work package status in step with code activity.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="case.css">
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <strong><a href="index.html" style="color:inherit;text-decoration:none">Cindy Cetta Khairunnisa</a></strong>
+    <nav aria-label="Main">
+      <ul>
+        <li><a href="index.html#education">Education</a></li>
+        <li><a href="index.html#projects">Projects</a></li>
+        <li><a href="index.html#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap cs-top">
+    <a class="back" href="index.html#n8n-openproject">&larr; Back to portfolio</a>
+    <p class="eyebrow">Case study</p>
+    <h1 class="cs-h1">Keeping the tracker <em>truthful</em> without asking developers to remember.</h1>
+    <p class="cs-lede">An n8n workflow that reads the work package ID from GitLab activity and updates OpenProject automatically, so task status follows the code instead of someone&rsquo;s memory.</p>
+    <dl class="cs-meta"><div><dt>ROLE</dt><dd>Workflow Builder</dd></div><div><dt>YEAR</dt><dd>2026</dd></div><div><dt>STACK</dt><dd>n8n, GitLab webhooks, OpenProject API v3, JavaScript</dd></div></dl>
+    <ul class="chips"><li><a class=primary href="https://github.com/cynd2/devflow-sync" target="_blank" rel="noopener">Repository</a></li></ul>
+    <figure class="shot" style="margin-top:32px"><div class="frame"><img src="img/n8n-workflow.png" alt="The n8n workflow canvas: webhook, ID validation, work package lookup, event routing, status transitions and error handling" loading="lazy"></div><figcaption>The workflow canvas. Events enter on the left, are validated, routed by type, and end in a status update, a comment, or an error alert.</figcaption></figure>
+  </div>
+
+  <section class="cs problem wide-media"><div class="wrap">
+    <div class="split">
+      <div class="split-text">
+    <h2>The problem</h2>
+    <p class="cs-title">Developers finished the work. The tracker never found out.</p>
+<p>Developers write code in GitLab and track work in OpenProject. After pushing a branch or merging, they have to open OpenProject and update the work package by hand. In practice this step is often missed, especially mid-task, so the status shown in the tracker drifts away from reality.</p><p>The tracker also captures nothing about what changed in the code. Anyone reviewing progress had to open GitLab separately to find out, which defeats the point of having a single place to look.</p>
+      </div>
+      <figure class="split-media"><video class="split-video" src="media/breakdown-status-mismatch.mp4" autoplay muted loop playsinline preload="metadata" aria-label="Animation: code moves forward in GitLab while the OpenProject status stays behind"></video></figure>
+    </div>
+  </div></section>
+  <section class="cs"><div class="wrap">
+    <h2>The solution</h2>
+    <p class="cs-title">Four decisions that make the automation safe to trust</p>
+<div class="cards"><div class="card "><span class="num">1</span><h4>The work package ID is the only link</h4><p>A branch name, merge request title or commit message carries the ID (for example <code>feature/OP-12345_short-description</code>). One forgiving pattern finds it, so the convention is easy to follow.</p></div><div class="card "><span class="num">2</span><h4>Stop loudly when something is wrong</h4><p>A missing ID or a project that has not opted in does not fail silently. The workflow routes to an error path that builds a readable message and alerts the team.</p></div><div class="card "><span class="num">3</span><h4>Only change what actually changes</h4><p>Before updating, the workflow checks whether the new status differs from the current one. No change means no update and no noise in the activity stream.</p></div><div class="card "><span class="num">4</span><h4>Every update explains itself</h4><p>Each status change is followed by a comment saying which event triggered it, so the history in OpenProject is readable without opening GitLab.</p></div></div>
+  </div></section>
+  <section class="cs"><div class="wrap">
+    <h2>Background</h2>
+    <p class="cs-title">A tracker that is sometimes wrong is a tracker nobody trusts</p>
+<p>Two tools do different jobs. OpenProject holds the work packages (User Story, Task, Issue) and is meant to be the single source of truth for progress. GitLab is where the work happens: branches, commits and merge requests.</p><p>Because the link between them was a person remembering to update a status, the tracker was only as accurate as the least consistent developer. An automation layer was the missing piece, with n8n acting as the bridge between the two systems.</p><div class="cards"><div class="card "><p class="k">EVENT SOURCE</p><h4>GitLab webhooks</h4></div><div class="card "><p class="k">AUTOMATION ENGINE</p><h4>n8n</h4></div><div class="card "><p class="k">DESTINATION</p><h4>OpenProject API v3</h4></div><div class="card "><p class="k">AUDIENCES</p><h4>Developers, QA and project leads</h4></div></div>
+  </div></section>
+  <section class="cs"><div class="wrap">
+    <h2>Research</h2>
+    <p class="cs-title">Decisions came from the payloads and the platform limits, not from guesses</p>
+<p class="small">Input came from reading real webhook payloads, the OpenProject and GitLab API behaviour, and the manual process the team already followed.</p><div class="cards wide"><div class="card "><p class="k">DECISION 1</p><h4>Validating the ID needed an IF node, not a Filter node</h4><p>A Filter drops non-matching items silently, so a missing ID would never reach the error path.</p><p>An IF node gives an explicit true and false output, so the false branch can raise an alert.</p><img class="card-illus" src="img/if-vs-filter.jpg" alt="Illustration: a Filter node silently drops an item with no ID, while an IF node sends it down the false branch to an alert" loading="lazy"></div><div class="card "><p class="k">DECISION 2</p><h4>Develop against test URLs and pinned data</h4><p>The webhook test URL only listens after clicking Listen, and the production URL needs the workflow activated.</p><p>Pinning a captured payload on the previous node lets every later node be re-run without re-triggering GitLab.</p><img class="card-illus" src="img/pinned-data.jpg" alt="Illustration: a pinned webhook payload lets Extract and Check be re-run without a new GitLab push" loading="lazy"></div><div class="card "><p class="k">DECISION 3</p><h4>The merge request webhook limits what duration can mean</h4><p>It carries only the last commit, not the first, so duration is measured from the merge request creation date.</p><p>A true first-commit date would need an extra GitLab API call, which was left as optional.</p><img class="card-illus" src="img/mr-timeline.jpg" alt="Illustration: duration runs from merge request creation to merge, because the webhook carries only the last commit" loading="lazy"></div><div class="card "><p class="k">DECISION 4</p><h4>Duration counts weekdays only</h4><p>The team works a five-day week, so weekends are skipped.</p><p>Public holidays are not excluded yet. That is a known limit, not an oversight.</p><img class="card-illus" src="img/weekdays-only.jpg" alt="Illustration: Saturday and Sunday are skipped, giving five working days; public holidays are not excluded yet" loading="lazy"></div></div>
+  </div></section>
+  <section class="cs"><div class="wrap">
+    <h2>Define</h2>
+    <p class="cs-title">How might we keep work package status accurate without relying on developers to update it?</p>
+<div class="cards"><div class="card " style="background:var(--accent);border-color:var(--accent)"><p class="k" style="color:rgba(255,255,255,.7)">DEVELOPERS</p><p style="color:#fff">Focused on code. They want to follow a simple naming habit and have the tracker update itself.</p></div><div class="card "><p class="k">QA, LEADS AND ADVISORS</p><p>Reading progress. They need the status to be current and the reason for each change visible.</p></div></div><p class="small">These two groups come from knowing who works with the tracker, not from a formal study, so they are stated plainly rather than dressed up as personas.</p>
+  </div></section>
+  <section class="cs"><div class="wrap">
+    <h2>Ideation</h2>
+    <p class="cs-title">Each pain point turned into one mechanism</p>
+<div class="cards wide"><div class="card "><p class="k">PAIN POINT</p><h4>Status updates get forgotten</h4></div><div class="card "><p class="k">BECAME</p><p>Webhooks from GitLab trigger the update, so no one has to remember.</p></div><div class="card "><p class="k">PAIN POINT</p><h4>Automation that fails silently is worse than none</h4></div><div class="card "><p class="k">BECAME</p><p>An IF node on the ID, plus an error path that builds a message and alerts the team.</p></div><div class="card "><p class="k">PAIN POINT</p><h4>Tracker history says nothing about the code</h4></div><div class="card "><p class="k">BECAME</p><p>A comment on each status change naming the event and branch that triggered it.</p></div></div><div class="panel"><span class="tag">Why this solution</span><div class="cols"><p>Asking developers to be more disciplined does not scale. The reliable fix was to remove the step, so the only thing developers do is put the ID in a branch or merge request title, which they already name anyway.</p><p>Webhooks were chosen over polling because GitLab already announces every push and merge request. Polling would add delay and API calls for information that arrives for free.</p></div></div>
+  </div></section>
+  <section class="cs"><div class="wrap">
+    <h2>Engineering</h2>
+    <p class="cs-title">One stage, one job</p>
+<p class="small">Built in n8n with Code nodes for logic, IF and Switch nodes for routing, and HTTP Request nodes for the OpenProject API.</p><ul class="flow"><li>Webhook</li><li class="ar">&rarr;</li><li>Extract &amp; validate ID</li><li class="ar">&rarr;</li><li>Fetch work package</li><li class="ar">&rarr;</li><li>Route by event &amp; type</li><li class="ar">&rarr;</li><li class=a>Update, comment or alert</li></ul><div class="cards wide"><div class="card "><p class="k"></p><h4>Extract once, read everywhere</h4><p>One Code node reads the raw payload and branches on the event header (push, merge request, comment, job). It returns a flat object, so every later node reads clean fields instead of digging through nested JSON.</p></div><div class="card "><p class="k"></p><h4>A forgiving ID pattern</h4><p><code>OP[- _#]?(\d+)</code> accepts <code>OP-123</code>, <code>OP_123</code>, <code>OP 123</code> and <code>OP#123</code>. For merge requests the title, description and source branch are searched together.</p></div><div class="card "><p class="k"></p><h4>Routing in two steps</h4><p>A Switch on the event type sends push, merge request and comment events down separate branches. A second Switch on the work package type lets Task, User Story and Issue each follow their own transition rules.</p></div><div class="card "><p class="k"></p><h4>Transitions kept in one place per type</h4><p>Each handler maps the current status and the event to the next status. Keeping them as separate Code nodes means changing the rules for one type never touches the others.</p></div></div>
+  </div></section>
+  <section class="cs"><div class="wrap">
+    <h2>Testing &amp; iterations</h2>
+    <p class="cs-title">What building one node at a time exposed</p>
+<p>The workflow was built from the trigger forwards, one node at a time, with a captured payload pinned so each node could be tested alone.</p><p>The first real run exposed a data problem: the ID check returned false. My test repository was on GitHub, while the extraction logic was written for GitLab, where the event header and payload fields are named differently (<code>x-gitlab-event</code> against <code>x-github-event</code>, <code>object_attributes</code> against <code>pull_request</code>). The likely cause was the extractor falling through to its default branch and returning no ID. The fix is to map both shapes, or to test with a real GitLab event.</p><p>Reviewing the extractor also turned up edge cases: a branch name with no underscore broke a <code>split</code>, a null author name could crash the node, and a few variables were unused or misnamed. Fixes were proposed for each.</p><div class="card "><p class="k">WHAT STAYED UNVALIDATED</p><p>The workflow has not been proven end to end against a live GitLab and OpenProject pair, and the status transition tables have not been tested against every event combination. There are no usage numbers yet, so any claim that it reduces missed updates would be a guess.</p></div>
+  </div></section>
+  <section class="cs"><div class="wrap">
+    <h2>Result &amp; final thoughts</h2>
+    <p class="cs-title">The link between code and tracker is now a rule, not a habit</p>
+<p>The workflow connects GitLab activity to OpenProject through a single, checkable link: the work package ID. Webhook intake, ID extraction and validation, event routing and the error path are in place, and the remaining transitions are being completed and tested.</p><p>The lesson I would defend hardest is making failure visible. An automation that quietly does nothing when the ID is missing looks fine and is worse than no automation, because everyone assumes the tracker is current.</p><div class="panel"><span class="tag">What&rsquo;s still open</span><div class="cols"><p>Prove the full flow end to end against live systems, and confirm the transition tables for each work package type.</p><p>Replace the creation-date duration with the true first-commit date, and exclude public holidays from the working-day count.</p><p>Finish adapting the extractor so GitHub and GitLab payloads both work, then export a sanitised copy of the workflow for the repository.</p></div></div>
+  </div></section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>GitLab &rarr; OpenProject Workflow Automation</span>
+    <a href="index.html#meeting-room">Back to portfolio &rarr;</a>
+  </div>
+</footer>
+
+</body>
+</html>
