@@ -69,18 +69,18 @@
     <p class="cs-title">From the landing page to a self-hosted analytics backend</p>
     <p>No GA4. Every visitor event goes through a pipeline I built and can host in-country, and nothing is tracked until the visitor accepts.</p>
 
-    <p class="cs-label">FRONTEND</p>
+    <p class="cs-label cs-label-c">FRONTEND</p>
     <div class="cards">
       <div class="card"><p class="k">SITE STRUCTURE</p><h4>Static, no framework or build step</h4>
         <p>A home page, three product pages (Berlin, Ottawa, Case) and a privacy page, in plain HTML, CSS and JS.</p>
-        <p>Being static makes it fast to load, cheap to host and easy for search engines to crawl.</p></div>
+        <p>Being static makes it fast to load, cheap to host and easy for search engines to crawl.</p><img class="card-illus" src="img/gz-structure.jpg" alt="Illustration: a static site with a home page, three product pages and a privacy page, built in plain HTML, CSS and JS" loading="lazy"></div>
       <div class="card"><p class="k">CONVERSION PATH</p><h4>No cart: every enquiry goes to WhatsApp</h4>
         <p>Every button opens <code>wa.me</code> with a message already filled in for that product or variant, such as "Halo, saya ingin tanya harga brankas Berlin VI." Sales already knows which product the buyer means.</p>
-        <p>Each product page has a catalog table of variant dimensions and weights, with a "Tanya Harga" link on every row.</p></div>
+        <p>Each product page has a catalog table of variant dimensions and weights, with a "Tanya Harga" link on every row.</p><img class="card-illus" src="img/gz-conversion.jpg" alt="Illustration: a Tanya Harga button in the catalog table opens WhatsApp with the product message already filled in" loading="lazy"></div>
       <div class="card"><p class="k">LOCAL SIGNALS AND SEO</p><h4>Showing the business is local</h4>
         <p>City pills mark the branch areas, and a Mojokerto branch map is embedded.</p>
         <p><code>robots.txt</code>, <code>sitemap.xml</code> and canonical tags. The home canonical is <code>/</code>, not <code>index.html</code>, so Google doesn't see two copies of the home page.</p>
-        <p>A gold and jewelry FAQ answers a real buyer question.</p></div>
+        <p>A gold and jewelry FAQ answers a real buyer question.</p><img class="card-illus" src="img/gz-seo.jpg" alt="Illustration: city pills and a branch map, robots.txt, sitemap.xml and a canonical tag pointing to the home page, not index.html" loading="lazy"></div>
     </div>
     <div class="card" style="margin-bottom:16px"><p class="k">CONSENT-GATED TRACKING</p><h4>Nothing leaves the browser until the visitor accepts</h4>
       <div class="cards wide" style="margin:12px 0 0">
@@ -93,40 +93,34 @@
       </div>
     </div>
 
-    <p class="cs-label">BACKEND, THE ANALYTICS PIPELINE</p>
+    <p class="cs-label cs-label-c">BACKEND, THE ANALYTICS PIPELINE</p>
+    <div class="intro-video"><figure><video src="media/minimal-analytics-pipeline.mp4" autoplay muted loop playsinline preload="metadata" aria-label="Animation: a visitor event travels through the analytics pipeline from the browser to the dashboard"></video></figure></div>
     <div class="cards wide">
-      <div class="card dark"><p class="k">01 &middot; INGESTION API</p><h4>Fastify + Zod, the public endpoint</h4>
-        <p><code>/v1/events</code> takes one event and <code>/v1/events/batch</code> up to 20.</p>
-        <p>Rejects a missing site key with <code>401</code> and a malformed payload with <code>400</code> plus field-level errors. Per-IP rate limits protect it, though the limits are still placeholder values.</p>
-        <p>The server adds timestamp, IP and user agent; the browser never supplies them.</p>
-        <p>Answers <code>202</code> and queues the event on Redis Streams without waiting, so a slow database can't make visitors wait or lose events.</p></div>
-      <div class="card dark"><p class="k">02 &middot; WORKER</p><h4>Where data is cleaned and enriched</h4>
-        <p>Reads the queue as a consumer group and, on startup, first picks up messages it received but never acknowledged.</p>
-        <p>Drops bot traffic by user agent before it reaches the database.</p>
-        <p>Looks up country and city in a local MaxMind database, no network call. If the file is missing it logs a warning and carries on.</p>
-        <p>Hashes the IP with a secret pepper; the raw IP is never stored.</p>
-        <p>Maps the browser token to a session through a Redis key with a sliding 30-minute expiry, and saves the UTM source from the landing URL.</p>
-        <p>Sessions and pages go to Postgres; events go to ClickHouse, a column database built for large event volumes.</p></div>
+      <div class="card dark"><p class="k">01 &middot; INGESTION API</p><h4>The public door for events</h4>
+        <p>Takes one event (<code>/v1/events</code>) or up to 20 at once (<code>/v1/events/batch</code>), and rejects bad requests with a clear error: <code>401</code> for a missing site key, <code>400</code> for a malformed payload. Rate limits are in place, but still placeholder values.</p>
+        <p>The server adds the timestamp, IP and user agent itself, so the browser can't fake them.</p>
+        <p>It replies <code>202</code> right away and puts the event in a Redis queue, so a slow database never makes visitors wait or loses events.</p></div>
+      <div class="card dark"><p class="k">02 &middot; WORKER</p><h4>Cleans and enriches each event</h4>
+        <p>Reads the queue, and after a restart first picks up any events it hadn't finished. Drops bot traffic before it reaches the database.</p>
+        <p>Adds country and city from a local MaxMind file (no network call), and hashes the IP with a secret so the raw IP is never stored.</p>
+        <p>Groups events into sessions, with a 30-minute timeout, and saves the UTM source. Sessions and pages go to Postgres; events go to ClickHouse, a database built for large event volumes.</p></div>
     </div>
     <div class="cards wide">
-      <div class="card"><p class="k">03 &middot; REPORTING API</p><h4>Read-only, behind a bearer key</h4>
-        <p>The key is compared with a timing-safe check. Five endpoints:</p>
-        <p><code>pageviews</code> daily count; <code>top-pages</code> joined in application code, since Postgres and ClickHouse can't join directly; <code>sessions</code> paginated with total and average duration; <code>click-events</code> ranked by label; <code>traffic-sources</code> using UTM, then referrer domain, then direct.</p>
-        <p>Every endpoint rejects date ranges over 92 days, so no one can run an unbounded query over the events table.</p></div>
-      <div class="card"><p class="k">04 &middot; DASHBOARD</p><h4>A static page reading the reporting API</h4>
-        <p>Three headline numbers, a pageviews line chart, bar charts for top pages, clicks and traffic sources, and a paginated sessions table.</p>
-        <p>7, 30 and 90-day presets or custom dates, a "View as table" toggle on every chart, and light, dark and auto themes.</p>
-        <p>Chart.js is bundled in rather than loaded from a CDN, so it works on a Pi with unreliable internet. The API address and key stay only in that browser.</p></div>
+      <div class="card"><p class="k">03 &middot; REPORTING API</p><h4>Read-only, behind a key</h4>
+        <p>Needs a bearer key, checked in a timing-safe way. Five endpoints: <code>pageviews</code>, <code>top-pages</code>, <code>sessions</code>, <code>click-events</code> and <code>traffic-sources</code>.</p>
+        <p>Every endpoint rejects date ranges over 92 days, so nobody can run an unbounded query over the events table.</p></div>
+      <div class="card"><p class="k">04 &middot; DASHBOARD</p><h4>A static page that reads the reporting API</h4>
+        <p>Headline numbers, a pageviews chart, bar charts for top pages, clicks and traffic sources, and a sessions table. Pick 7, 30 or 90 days or custom dates, switch any chart to a table, and choose light, dark or auto theme.</p>
+        <p>Chart.js is bundled in rather than loaded from a CDN, so it still works on a Pi with unreliable internet. The API address and key stay in that browser only.</p></div>
     </div>
 
-    <p class="cs-label">HOW AN EVENT TRAVELS</p>
+    <p class="cs-label cs-label-c">HOW AN EVENT TRAVELS</p>
     <ul class="flow" style="margin-bottom:24px">
       <li>Visitor accepts</li><li class="ar">&rarr;</li><li>sendBeacon</li><li class="ar">&rarr;</li><li class="d">Ingestion API</li><li class="ar">&rarr;</li><li>Redis Streams</li><li class="ar">&rarr;</li><li class="d">Worker</li><li class="ar">&rarr;</li><li>Postgres + ClickHouse</li><li class="ar">&rarr;</li><li class="a">Reporting API &rarr; Dashboard</li>
     </ul>
 
-    <figure class="shot narrow">
+    <figure class="shot narrow" style="margin-left:auto;margin-right:auto">
       <div class="frame"><img src="img/gaza-dashboard.jpg" alt="Chart.js analytics dashboard reading from the reporting API, shown with demo data"></div>
-      <figcaption>The Chart.js dashboard, shown with demo data, reading from the reporting API.</figcaption>
     </figure>
 
     <div class="cards wide">
@@ -146,18 +140,6 @@
       <div class="card"><p class="k">MY SCOPE</p><h4>Frontend, SEO and self-hosted analytics</h4></div>
       <div class="card"><p class="k">STATUS</p><h4>Frontend live; analytics tested locally</h4></div>
     </div>
-  </div></section>
-
-  <section class="cs"><div class="wrap">
-    <h2>Research</h2>
-    <p class="cs-title">An audit of the live site, not a user study</p>
-    <div class="cards">
-      <div class="card"><p>One generic meta title and description, reused on every page.</p></div>
-      <div class="card"><p>No structured data (schema.org) anywhere on the live pages.</p></div>
-      <div class="card"><p>No local SEO signals: no LocalBusiness schema, no consistent name/address/phone.</p></div>
-      <div class="card"><p>Thin per-product content, not enough to compete for the terms it needed.</p></div>
-    </div>
-    <p class="small">No user interviews or competitive analysis in the conventional sense: this was a direct audit of the existing site against how local search actually ranks small multi-branch businesses.</p>
   </div></section>
 
   <section class="cs"><div class="wrap">
@@ -207,10 +189,22 @@
 
   <section class="cs"><div class="wrap">
     <h2>Testing &amp; iterations</h2>
-    <p class="cs-title">Caught a discrepancy before it shipped in structured data</p>
-    <p>Reviewing the checklist against the live site surfaced a factual mismatch: the site states a 5-year service warranty, while an early draft FAQ and meta description claimed 10 years. Shipping that inconsistency in FAQPage schema risks a rich-result penalty for content that doesn't match what's on screen.</p>
-    <p>Resolved to 5 tahun, matching the live site. No search-ranking data exists yet to test against: Google's own guidance is 2 to 6 weeks for local terms once Google Business Profile is active, and 6 months or more for a broader term with regular articles.</p>
-    <div class="card" style="margin-top:20px"><p class="k">WHAT'S STILL UNMEASURED</p><p>No ranking data, no click-through data, and no confirmation yet that all seven branch pages and Google Business Profile listings are live and consistent. This is strategy and shipped implementation, not a validated result.</p></div>
+    <p class="cs-title">Reports based on dataset</p>
+
+      <p><b>What the reports show on the dataset.</b> To test the pipeline end to end, I read the five reports from the dashboard (last 30 days).</p>
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th>Report</th><th>Top result</th><th>Count</th></tr></thead>
+        <tbody>
+        <tr><td>Pageviews, 30 days</td><td>all pages</td><td>1,825</td></tr>
+        <tr><td>Sessions</td><td>average 1m 34s</td><td>549</td></tr>
+        <tr><td>Top pages</td><td><code>/</code>, then <code>/ottawa.html</code></td><td>about 600, 320</td></tr>
+        <tr><td>Click events</td><td><code>whatsapp_cta_hero</code></td><td>about 96</td></tr>
+        <tr><td>Traffic sources</td><td>google, then direct</td><td>about 283, 163</td></tr>
+        </tbody></table></div>
+      <p style="margin-top:14px"><b>What this confirms.</b> Every report returns data from event to dashboard. Labelled buttons show which one produces the most enquiries. Sources fall back from UTM to referrer to direct. It does not say anything about real visitors: that data does not exist yet.</p>
+    </div>
+    <div class="cards" style="margin-top:20px">
+    </div>
   </div></section>
 
   <section class="cs"><div class="wrap">
